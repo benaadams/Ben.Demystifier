@@ -96,7 +96,7 @@ Which is far less helpful, and close to jibberish in places
 
 * **constructors** 
 
-   Do not match code, output as `.ctor` and `.cctor`
+   Does not match code, output as `.ctor` and `.cctor`
 * **iterators** 
 
    Cannot determine overload `<Iterator>d__3.MoveNext()` rather than `Iterator(int startAt)+MoveNext()`
@@ -147,4 +147,4 @@ Which is far less helpful, and close to jibberish in places
    Do not match code, output as `Int64`, `Boolean`, `String` rather than `long`, `bool`, `string`
 * **return types**
 
-   Skiped entirely from method signiture
+   Skipped entirely from method signiture
