@@ -59,8 +59,8 @@ namespace System.Diagnostics
                     var fileName = frame.GetFileName();
                     var row = frame.GetFileLineNumber();
                     var column = frame.GetFileColumnNumber();
-
-                    if (string.IsNullOrEmpty(fileName))
+                    var ilOffset = frame.GetILOffset();
+                    if (string.IsNullOrEmpty(fileName) && ilOffset >= 0)
                     {
                         // .NET Framework and older versions of mono don't support portable PDBs
                         // so we read it manually to get file name and line information
@@ -168,7 +168,20 @@ namespace System.Diagnostics
 
             if (method is System.Reflection.MethodInfo mi)
             {
-                methodDisplayInfo.ReturnParameter = GetParameter(mi.ReturnParameter);
+                var returnParameter = mi.ReturnParameter;
+                if (returnParameter != null)
+                {
+                    methodDisplayInfo.ReturnParameter = GetParameter(mi.ReturnParameter);
+                }
+                else if (mi.ReturnType != null)
+                {
+                    methodDisplayInfo.ReturnParameter = new ResolvedParameter
+                    {
+                        Prefix = "",
+                        Name = "",
+                        Type = TypeNameHelper.GetTypeDisplayName(mi.ReturnType, fullName: false, includeGenericParameterNames: true).ToString(),
+                    };
+                }
             }
 
             if (method.IsGenericMethod)
