@@ -1,5 +1,7 @@
 # Ben.Demystifier
 
+[![NuGet version (Ben.Demystifier)](https://img.shields.io/nuget/v/Ben.Demystifier.svg?style=flat-square)](https://www.nuget.org/packages/Ben.Demystifier/)
+
 ## High performance understanding for stack traces 
 
 .NET stack traces output the compiler transformed methods; rather than the source code methods, which make them slow to mentally parse and match back to the source code.
