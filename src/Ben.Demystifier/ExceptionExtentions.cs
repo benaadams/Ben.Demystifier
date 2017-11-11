@@ -15,7 +15,11 @@ namespace System.Diagnostics
             {
                 var stackTrace = new EnhancedStackTrace(exception);
 
-                stackTraceString.SetValue(exception, stackTrace.ToString());
+                if (stackTrace.FrameCount > 0)
+                {
+                    stackTraceString.SetValue(exception, stackTrace.ToString());
+                }
+
                 exception.InnerException?.Demystify();
             }
             catch

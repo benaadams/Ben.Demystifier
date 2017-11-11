@@ -12,29 +12,38 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace System.Diagnostics
 {
     public partial class EnhancedStackTrace
     {
+
         private static List<EnhancedStackFrame> GetFrames(Exception exception)
         {
-            var frames = new List<EnhancedStackFrame>();
             if (exception == null)
+            {
+                return new List<EnhancedStackFrame>();
+            }
+
+            var needFileInfo = true;
+            var stackTrace = new StackTrace(exception, needFileInfo);
+
+            return GetFrames(stackTrace);
+        }
+
+        private static List<EnhancedStackFrame> GetFrames(StackTrace stackTrace)
+        {
+            var frames = new List<EnhancedStackFrame>();
+            var stackFrames = stackTrace.GetFrames();
+
+            if (stackFrames == null)
             {
                 return frames;
             }
 
             using (var portablePdbReader = new PortablePdbReader())
             {
-                var needFileInfo = true;
-                var stackTrace = new StackTrace(exception, needFileInfo);
-                var stackFrames = stackTrace.GetFrames();
-
-                if (stackFrames == null)
-                {
-                    return default;
-                }
 
                 for (var i = 0; i < stackFrames.Length; i++)
                 {
@@ -557,6 +566,16 @@ namespace System.Diagnostics
             Debug.Assert(method != null);
             try
             {
+                var type = method.DeclaringType;
+                if (type == typeof(Task<>) && method.Name == "InnerInvoke")
+                {
+                    return false;
+                }
+                if (type == typeof(Task) && method.Name == "ExecuteWithThreadLocal")
+                {
+                    return false;
+                }
+
                 // Don't show any methods marked with the StackTraceHiddenAttribute
                 // https://github.com/dotnet/coreclr/pull/14652
                 foreach (var attibute in EnumerableIList.Create(method.GetCustomAttributesData()))
@@ -568,7 +587,6 @@ namespace System.Diagnostics
                     }
                 }
 
-                var type = method.DeclaringType;
                 if (type == null)
                 {
                     return true;
