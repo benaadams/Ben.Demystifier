@@ -1,17 +1,17 @@
 ﻿// Copyright (c) Ben A Adams. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Generic.Enumerable;
-using System.Diagnostics;
 using System.Text;
 
 namespace System.Diagnostics
 {
     public partial class EnhancedStackTrace : StackTrace, IEnumerable<EnhancedStackFrame>
     {
+        public static EnhancedStackTrace Current() => new EnhancedStackTrace(new StackTrace(1 /* skip this one frame */, true));
+
         private readonly List<EnhancedStackFrame> _frames;
 
         // Summary:
@@ -33,6 +33,17 @@ namespace System.Diagnostics
             }
 
             _frames = GetFrames(e);
+        }
+
+
+        public EnhancedStackTrace(StackTrace stackTrace)
+        {
+            if (stackTrace == null)
+            {
+                throw new ArgumentNullException(nameof(stackTrace));
+            }
+
+            _frames = GetFrames(stackTrace);
         }
 
         /// <summary>
@@ -63,7 +74,7 @@ namespace System.Diagnostics
         /// <returns>A readable representation of the stack trace.</returns>
         public override string ToString()
         {
-            if (_frames == null) return "";
+            if (_frames == null || _frames.Count == 0) return "";
 
             var sb = new StringBuilder();
 
@@ -82,7 +93,7 @@ namespace System.Diagnostics
             {
                 if (i > 0)
                 {
-                    sb.AppendLine();
+                    sb.Append(Environment.NewLine);
                 }
 
                 var frame = frames[i];
