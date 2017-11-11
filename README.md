@@ -26,18 +26,19 @@ Calling `.ToString()` on the Demystified exception will produce a string stacktr
 ```csharp
 System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
    at bool System.Collections.Generic.List<T>+Enumerator.MoveNextRare()
-   at bool Program.Iterator(int startAt)+MoveNext()                                      // Resolved enumerator
+   at IEnumerable<string> Program.Iterator(int startAt)+MoveNext()                       // Resolved enumerator
    at bool System.Linq.Enumerable+SelectEnumerableIterator<TSource, TResult>.MoveNext()  // Resolved enumerator
    at string string.Join(string separator, IEnumerable<string> values)                    
    at string Program+GenericClass<TSuperType>.GenericMethod<TSubType>(ref TSubType value) 
    at async Task<string> Program.MethodAsync(int value)                                  // Resolved async 
    at async Task<string> Program.MethodAsync<TValue>(TValue value)                       // Resolved async 
-   at string Program.Method(string value)+()=>{}                                         // Resolved lambda source 
+   at string Program.Method(string value)+()=>{} [0]                                     // lambda source + ordinal
+   at string Program.Method(string value)+()=>{} [1]                                     // lambda source + ordinal 
    at string Program.RunLambda(Func<string> lambda)                                       
    at (string val, bool) Program.Method(string value)                                    // Tuple returning
-   at ref string Program.RefMethod(string value)+LocalFuncRefReturn()                    // ref return local func
-   at int Program.RefMethod(string value)+LocalFuncParam(string val)                     // local function
-   at string Program.RefMethod(string value)                                              
+   at ref string Program.RefMethod(in string value)+LocalFuncRefReturn()                 // ref return local func
+   at int Program.RefMethod(in string value)+LocalFuncParam(string val)                  // local function
+   at string Program.RefMethod(in string value)                                          // in param (readonly ref)    
    at (string val, bool) static Program()+(string s, bool b)=>{}                         // tuple return static lambda
    at void static Program()+(string s, bool b)=>{}                                       // void static lambda
    at void Program.Start((string val, bool) param)                                       // Resolved tuple param
@@ -73,6 +74,7 @@ System.InvalidOperationException: Collection was modified; enumeration operation
    at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task) // ? no value
    at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()                           // ? no value
    at Program.<>c__DisplayClass8_0.<Method>b__0()                                         //  ¯\_(ツ)_/¯
+   at Program.<>c__DisplayClass8_0.<Method>b__1()                                         //  ¯\_(ツ)_/¯
    at Program.RunLambda(Func`1 lambda) 
    at Program.Method(String value)
    at Program.<RefMethod>g__LocalFuncRefReturn|10_1(<>c__DisplayClass10_0& )              // local function
@@ -99,6 +101,11 @@ Which is far less helpful, and close to jibberish in places
 * **constructors** 
 
    Does not match code, output as `.ctor` and `.cctor`
+   
+* **parameters** 
+
+   Do not specify qualifier `ref`, `out` or `in`
+   
 * **iterators** 
 
    Cannot determine overload `<Iterator>d__3.MoveNext()` rather than `Iterator(int startAt)+MoveNext()`
