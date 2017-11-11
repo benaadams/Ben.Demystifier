@@ -93,8 +93,21 @@ namespace System.Diagnostics
                 var filePath = frame.GetFileName();
                 if (!string.IsNullOrEmpty(filePath))
                 {
-                    sb.Append(" in ");
-                    sb.Append(System.IO.Path.GetFullPath(filePath));
+                    try
+                    {
+                        sb.Append(" in ");
+                        var uri = new Uri(filePath);
+                        if (uri.IsFile)
+                        {
+                            sb.Append(System.IO.Path.GetFullPath(filePath));
+                        }
+                        else
+                        {
+                            sb.Append(uri);
+                        }
+                    }
+                    catch
+                    { }
                 }
 
                 var lineNo = frame.GetFileLineNumber();
