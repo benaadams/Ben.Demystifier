@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -37,15 +38,19 @@ namespace Demystify
             // Assert
             var stackTrace = demystifiedException.ToString();
             stackTrace = ReplaceLineEndings.Replace(stackTrace, "");
-            var trace = stackTrace.Split(Environment.NewLine);
+            var trace = stackTrace.Split(Environment.NewLine)
+                // Remove items that vary between test runners
+                .Where(s =>
+                    s != "   at void System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, object state)" &&
+                    s != "   at Task Demystify.DynamicCompilation.DoesNotPreventStackTrace()+()=>{}"
+                )
+                .ToArray();
 
             Assert.Equal(
                 new[] {
                     "System.ArgumentException: Message",
                     "   at void lambda_method(Closure)",
-                    "   at Task Demystify.DynamicCompilation.DoesNotPreventThrowStackTrace()+()=>{}",
-                    "   at void System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, object state)",
-                    "   at async Task Demystify.DynamicCompilation.DoesNotPreventThrowStackTrace()"}, 
+                    "   at async Task Demystify.DynamicCompilation.DoesNotPreventStackTrace()"}, 
                 trace);
         }
 
