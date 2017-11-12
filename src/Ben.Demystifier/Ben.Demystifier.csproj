@@ -6,6 +6,8 @@
     <Description>High performance understanding for stack traces (Make error logs more productive)</Description>
     <Authors>ben_a_adams</Authors>
     <RepositoryUrl>https://github.com/benaadams/Ben.Demystifier</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/benaadams/Ben.Demystifier</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/benaadams/Ben.Demystifier/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
     <IncludeSymbols>true</IncludeSymbols>
     <IncludeSource>true</IncludeSource>
@@ -14,7 +16,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
-    <LangVersion>7.2</LangVersion>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
