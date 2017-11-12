@@ -8,7 +8,7 @@ namespace System.Collections.Generic.Enumerable
         public static EnumerableIList<T> Create<T>(IList<T> list) => new EnumerableIList<T>(list);
     }
 
-    public readonly struct EnumerableIList<T> : IEnumerableIList<T>, IList<T>
+    public struct EnumerableIList<T> : IEnumerableIList<T>, IList<T>
     {
         private readonly IList<T> _list;
 
