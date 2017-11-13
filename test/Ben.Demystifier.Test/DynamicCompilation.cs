@@ -38,7 +38,7 @@ namespace Demystify
             // Assert
             var stackTrace = demystifiedException.ToString();
             stackTrace = ReplaceLineEndings.Replace(stackTrace, "");
-            var trace = stackTrace.Split(Environment.NewLine)
+            var trace = stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.None)
                 // Remove items that vary between test runners
                 .Where(s =>
                     s != "   at void System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, object state)" &&

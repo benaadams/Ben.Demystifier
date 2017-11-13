@@ -19,7 +19,7 @@ namespace System.Diagnostics.Internal
 
         public OpCode OpCode { get; private set; }
         public int MetadataToken { get; private set; }
-        public object Operand { get; private set; }
+        public MemberInfo Operand { get; private set; }
 
         public bool Read(MethodBase methodInfo)
         {
@@ -35,13 +35,13 @@ namespace System.Diagnostics.Internal
         OpCode ReadOpCode()
         {
             byte instruction = ReadByte();
-            if (instruction != 254)
+            if (instruction < 254)
                 return singleByteOpCode[instruction];
             else
                 return doubleByteOpCode[ReadByte()];
         }
 
-        object ReadOperand(OpCode code, MethodBase methodInfo)
+        MemberInfo ReadOperand(OpCode code, MethodBase methodInfo)
         {
             MetadataToken = 0;
             switch (code.OperandType)
@@ -50,11 +50,23 @@ namespace System.Diagnostics.Internal
                     MetadataToken = ReadInt();
                     Type[] methodArgs = null;
                     if (methodInfo.GetType() != typeof(ConstructorInfo) && !methodInfo.GetType().IsSubclassOf(typeof(ConstructorInfo)))
+                    {
                         methodArgs = methodInfo.GetGenericArguments();
+                    }
                     Type[] typeArgs = null;
                     if (methodInfo.DeclaringType != null)
+                    {
                         typeArgs = methodInfo.DeclaringType.GetGenericArguments();
-                    return methodInfo.Module.ResolveMember(MetadataToken, typeArgs, methodArgs);
+                    }
+                    try
+                    {
+                        return methodInfo.Module.ResolveMember(MetadataToken, typeArgs, methodArgs);
+                    }
+                    catch
+                    {
+                        // Can return System.ArgumentException : Token xxx is not a valid MemberInfo token in the scope of module xxx.dll
+                        return null;
+                    }
             }
             return null;
         }

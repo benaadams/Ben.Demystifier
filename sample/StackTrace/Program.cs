@@ -16,9 +16,11 @@ class Program
         }
         catch (Exception ex)
         {
+            Console.WriteLine(ex);
             exception = ex.Demystify();
         }
 
+        Console.WriteLine();
         Console.WriteLine(exception);
     }
 
@@ -64,7 +66,12 @@ class Program
     [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
     static async Task<string> MethodAsync<TValue>(TValue value)
     {
-        return await MethodAsync(1);
+        return await MethodLocalAsync();
+
+        async Task<string> MethodLocalAsync()
+        {
+            return await MethodAsync(1);
+        }
     }
 
     [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
