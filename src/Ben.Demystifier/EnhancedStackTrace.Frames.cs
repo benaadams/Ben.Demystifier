@@ -317,10 +317,10 @@ namespace System.Diagnostics
             ordinal = null;
             foreach (var candidateMethod in candidateMethods)
             {
-                var nethodBody = candidateMethod.GetMethodBody();
+                var methodBody = candidateMethod.GetMethodBody();
                 if (kind == GeneratedNameKind.LambdaMethod)
                 {
-                    foreach (var v in EnumerableIList.Create(nethodBody?.LocalVariables))
+                    foreach (var v in EnumerableIList.Create(methodBody?.LocalVariables))
                     {
                         if (v.LocalType == type)
                         {
@@ -333,7 +333,7 @@ namespace System.Diagnostics
                     }
                 }
 
-                var rawIL = nethodBody?.GetILAsByteArray();
+                var rawIL = methodBody?.GetILAsByteArray();
                 if (rawIL == null) continue;
 
                 var reader = new ILReader(rawIL);
