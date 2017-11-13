@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ben A Adams. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Collections.Generic.Enumerable;
 using System.Reflection;
 
 namespace System.Diagnostics
@@ -18,6 +19,14 @@ namespace System.Diagnostics
                 if (stackTrace.FrameCount > 0)
                 {
                     stackTraceString.SetValue(exception, stackTrace.ToString());
+                }
+
+                if (exception is AggregateException aggEx)
+                {
+                    foreach (var ex in EnumerableIList.Create(aggEx.InnerExceptions))
+                    {
+                        ex.Demystify();
+                    }
                 }
 
                 exception.InnerException?.Demystify();
