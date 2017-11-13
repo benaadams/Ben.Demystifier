@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.Diagnostics
@@ -162,7 +163,7 @@ namespace System.Diagnostics
             // ResolveStateMachineMethod may have set declaringType to null
             if (type != null)
             {
-                var declaringTypeName =  TypeNameHelper.GetTypeDisplayName(type, fullName: true, includeGenericParameterNames: true);
+                var declaringTypeName = TypeNameHelper.GetTypeDisplayName(type, fullName: true, includeGenericParameterNames: true);
                 methodDisplayInfo.DeclaringTypeName = declaringTypeName;
             }
 
@@ -297,6 +298,17 @@ namespace System.Diagnostics
             candidateConstructors = dt.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(m => m.Name == matchName);
             if (TryResolveSourceMethod(candidateConstructors, kind, matchHint, ref method, ref type, out ordinal)) return true;
 
+            if (methodName == ".cctor")
+            {
+                candidateConstructors = dt.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly).Where(m => m.Name == matchName);
+                foreach (var cctor in candidateConstructors)
+                {
+                    method = cctor;
+                    type = dt;
+                    return true;
+                }
+            }
+
             return false;
         }
 
@@ -321,7 +333,6 @@ namespace System.Diagnostics
                     }
                 }
 
-
                 var rawIL = nethodBody?.GetILAsByteArray();
                 if (rawIL == null) continue;
 
@@ -342,23 +353,15 @@ namespace System.Diagnostics
                             return true;
                         }
                     }
-                    else if (reader.Operand is Type t)
-                    {
-                        if (t == type)
-                        {
-                            method = candidateMethod;
-                            type = method.DeclaringType;
-                            return true;
-                        }
-                    }
                 }
             }
+
             return false;
         }
 
         private static void GetOrdinal(MethodBase method, ref int? ordinal)
         {
-            var lamdaStart = method.Name.IndexOf((char) GeneratedNameKind.LambdaMethod + "__") + 3;
+            var lamdaStart = method.Name.IndexOf((char)GeneratedNameKind.LambdaMethod + "__") + 3;
             if (lamdaStart > 3)
             {
                 var secondStart = method.Name.IndexOf("_", lamdaStart) + 1;
@@ -584,7 +587,28 @@ namespace System.Diagnostics
                 {
                     return false;
                 }
-                if (type == typeof(Task) && method.Name == "ExecuteWithThreadLocal")
+                if (type == typeof(Task))
+                {
+                    switch (method.Name)
+                    {
+                        case "ExecuteWithThreadLocal":
+                        case "Execute":
+                        case "ExecutionContextCallback":
+                        case "ExecuteEntry":
+                        case "InnerInvoke":
+                            return false;
+                    }
+                }
+                if (type == typeof(ExecutionContext))
+                {
+                    switch (method.Name)
+                    {
+                        case "RunInternal":
+                        case "Run":
+                            return false;
+                    }
+                }
+                if (type.Namespace == "System.Threading" && (type.Name?.StartsWith("_") ?? false))
                 {
                     return false;
                 }

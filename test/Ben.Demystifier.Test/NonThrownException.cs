@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xunit;
@@ -28,13 +29,12 @@ namespace Demystify
             // Assert
             var stackTrace = demystifiedException.ToString();
             stackTrace = ReplaceLineEndings.Replace(stackTrace, "");
-            var trace = stackTrace.Split(Environment.NewLine);
+            var trace = stackTrace.Split(new[]{Environment.NewLine}, StringSplitOptions.None);
 
             Assert.Equal(
                 new[] {     
                     "System.Exception: Exception of type 'System.Exception' was thrown. ---> System.Exception: Exception of type 'System.Exception' was thrown.",
                     "   at Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()+()=>{}",
-                    "   at void System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, object state)",
                     "   at async Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()",
                     "   --- End of inner exception stack trace ---"}, 
                 trace);
@@ -52,13 +52,12 @@ namespace Demystify
             // Assert
             stackTrace = demystifiedException.ToString();
             stackTrace = ReplaceLineEndings.Replace(stackTrace, "");
-            trace = stackTrace.Split(Environment.NewLine);
+            trace = stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
             Assert.Equal(
                 new[] {
                     "System.Exception: Exception of type 'System.Exception' was thrown. ---> System.Exception: Exception of type 'System.Exception' was thrown.",
                     "   at Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()+()=>{}",
-                    "   at void System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, object state)",
                     "   at async Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()",
                     "   --- End of inner exception stack trace ---",
                     "   at async Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()"
@@ -78,11 +77,14 @@ namespace Demystify
             // Assert
             var stackTrace = est.ToString();
             stackTrace = ReplaceLineEndings.Replace(stackTrace, "");
-            var trace = stackTrace.Split(Environment.NewLine);
+            var trace = stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.None)
+                // Remove Full framework entries
+                .Where(s => !s.StartsWith("   at bool System.Threading._ThreadPoolWaitCallbac") &&
+                       !s.StartsWith("   at void System.Threading.Tasks.Task.System.Thre"));
+
 
             Assert.Equal(
                 new[] {
-                    "   at void System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, object state)",
                     "   at bool System.Threading.ThreadPoolWorkQueue.Dispatch()"},
                 trace);
         }

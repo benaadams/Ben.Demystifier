@@ -22,16 +22,21 @@ namespace Demystify
                     stackFrame => stackFrame.MethodInfo.ToString()
                 )
                 // Remove Framework method that can be optimized out (inlined)
-                .Where(methodName => methodName != "System.Collections.Generic.List<T>+Enumerator.MoveNext()")
-                // Don't include this method as call stack shared between multiple tests
-                .SkipLast(1);
+                .Where(methodName => !methodName.StartsWith("bool System.Collections.Generic.List<T>+"));
 
-            foreach (var method in methodNames)
-            {
-                Console.WriteLine(method.ToString());
-            }
+            var count = methodNames.Count();
+            methodNames = methodNames.Take(count - 1);
+
             // Assert
-            Assert.Equal (ExpectedCallStack, methodNames.ToList());
+            var expected = ExpectedCallStack.ToArray();
+            var trace = methodNames.ToArray();
+
+            Assert.Equal(expected.Length, trace.Length);
+
+            for (var i = 0; i < expected.Length; i++)
+            {
+                Assert.Equal(expected[i], trace[i]);
+            }
         }
 
 
@@ -52,7 +57,6 @@ namespace Demystify
 
         static List<string> ExpectedCallStack = new List<string>()
         {
-            "bool System.Collections.Generic.List<T>+Enumerator.MoveNextRare()",
             "IEnumerable<string> Demystify.MixedStack.Iterator()+MoveNext()",
             "string string.Join(string separator, IEnumerable<string> values)",
             "string Demystify.MixedStack+GenericClass<T>.GenericMethod<V>(ref V value)",
