@@ -608,10 +608,6 @@ namespace System.Diagnostics
                             return false;
                     }
                 }
-                if (type.Namespace == "System.Threading" && (type.Name?.StartsWith("_") ?? false))
-                {
-                    return false;
-                }
 
                 // Don't show any methods marked with the StackTraceHiddenAttribute
                 // https://github.com/dotnet/coreclr/pull/14652
