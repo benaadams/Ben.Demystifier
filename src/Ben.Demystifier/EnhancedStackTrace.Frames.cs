@@ -1,4 +1,4 @@
-﻿// Copyright (c) Ben A Adams. All rights reserved.
+// Copyright (c) Ben A Adams. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
@@ -86,10 +86,12 @@ namespace System.Diagnostics
                 return null;
             }
 
-            MethodBase method = originMethod;
+            var method = originMethod;
 
-            var methodDisplayInfo = new ResolvedMethod();
-            methodDisplayInfo.SubMethodBase = method;
+            var methodDisplayInfo = new ResolvedMethod
+            {
+                SubMethodBase = method
+            };
 
             // Type name
             var type = method.DeclaringType;
@@ -240,7 +242,7 @@ namespace System.Diagnostics
 
             var generatedName = methodName;
 
-            if (!TryParseGeneratedName(generatedName, out kind, out int openBracketOffset, out int closeBracketOffset))
+            if (!TryParseGeneratedName(generatedName, out kind, out var openBracketOffset, out var closeBracketOffset))
             {
                 return false;
             }
@@ -464,10 +466,10 @@ namespace System.Diagnostics
 
         private static int IndexOfBalancedParenthesis(string str, int openingOffset, char closing)
         {
-            char opening = str[openingOffset];
+            var opening = str[openingOffset];
 
-            int depth = 1;
-            for (int i = openingOffset + 1; i < str.Length; i++)
+            var depth = 1;
+            for (var i = openingOffset + 1; i < str.Length; i++)
             {
                 var c = str[i];
                 if (c == opening)
