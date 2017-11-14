@@ -518,64 +518,86 @@ namespace System.Diagnostics
         private static ResolvedParameter GetParameter(ParameterInfo parameter)
         {
             var parameterType = parameter.ParameterType;
-
             var prefix = GetPrefix(parameter, parameterType);
-
             var parameterTypeString = "?";
-            if (parameterType != null)
+
+            if (parameterType == null)
             {
-                if (parameterType.IsGenericType && parameter.CustomAttributes.Any())
+                return new ResolvedParameter
                 {
-                    var tupleNames = parameter.GetCustomAttributes<TupleElementNamesAttribute>().FirstOrDefault()?.TransformNames;
-                    if (tupleNames != null)
+                    Prefix = prefix,
+                    Name = parameter.Name,
+                    Type = parameterTypeString,
+                };
+            }
+
+            if (parameterType.IsGenericType)
+            {
+                var customAttribs = parameter.GetCustomAttributes(inherit: false);
+
+                if ((customAttribs?.Length ?? 0) > 0)
+                {
+                    var tupleNames = customAttribs
+                        .OfType<TupleElementNamesAttribute>().FirstOrDefault()?.TransformNames;
+
+                    if (tupleNames?.Count > 0)
                     {
-                        var sb = new StringBuilder();
-                        sb.Append("(");
-                        var args = parameterType.GetGenericArguments();
-                        for (var i = 0; i < args.Length; i++)
-                        {
-                            if (i > 0)
-                            {
-                                sb.Append(", ");
-                            }
-                            sb.Append(TypeNameHelper.GetTypeDisplayName(args[i], fullName: false, includeGenericParameterNames: true));
-
-                            if (i >= tupleNames.Count) continue;
-
-                            var argName = tupleNames[i];
-                            if (argName != null)
-                            {
-                                sb.Append(" ");
-                                sb.Append(argName);
-                            }
-                        }
-
-                        sb.Append(")");
-                        parameterTypeString = sb.ToString();
-
-                        return new ResolvedParameter
-                        {
-                            Prefix = prefix,
-                            Name = parameter.Name,
-                            Type = parameterTypeString,
-                        };
+                        return GetValueTupleParameter(tupleNames, prefix, parameter.Name, parameterType);
                     }
                 }
-
-                if (parameterType.IsByRef)
-                {
-                    parameterType = parameterType.GetElementType();
-                }
-
-                parameterTypeString = TypeNameHelper.GetTypeDisplayName(parameterType, fullName: false, includeGenericParameterNames: true);
-
             }
+
+            if (parameterType.IsByRef)
+            {
+                parameterType = parameterType.GetElementType();
+            }
+
+            parameterTypeString = TypeNameHelper.GetTypeDisplayName(parameterType, fullName: false, includeGenericParameterNames: true);
 
             return new ResolvedParameter
             {
                 Prefix = prefix,
                 Name = parameter.Name,
                 Type = parameterTypeString,
+            };
+        }
+
+        private static ResolvedParameter GetValueTupleParameter(IList<string> tupleNames, string prefix, string name, Type parameterType)
+        {
+            var sb = new StringBuilder();
+            sb.Append("(");
+            var args = parameterType.GetGenericArguments();
+            for (var i = 0; i < args.Length; i++)
+            {
+                if (i > 0)
+                {
+                    sb.Append(", ");
+                }
+
+                sb.Append(TypeNameHelper.GetTypeDisplayName(args[i], fullName: false, includeGenericParameterNames: true));
+
+                if (i >= tupleNames.Count)
+                {
+                    continue;
+                }
+
+                var argName = tupleNames[i];
+                if (argName == null)
+                {
+                    continue;
+                }
+
+                sb.Append(" ");
+                sb.Append(argName);
+            }
+
+            sb.Append(")");
+
+            return new ResolvedParameter
+            {
+                Prefix = prefix,
+                Name = name,
+                Type = sb.ToString(),
             };
         }
 
