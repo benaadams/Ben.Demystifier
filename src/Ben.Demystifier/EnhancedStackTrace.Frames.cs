@@ -524,7 +524,7 @@ namespace System.Diagnostics
             var parameterTypeString = "?";
             if (parameterType != null)
             {
-                if (parameterType.IsGenericType)
+                if (parameterType.IsGenericType && parameter.CustomAttributes.Any())
                 {
                     var tupleNames = parameter.GetCustomAttributes<TupleElementNamesAttribute>().FirstOrDefault()?.TransformNames;
                     if (tupleNames != null)
