@@ -24,7 +24,7 @@ namespace Demystify
             }
 
             // Act
-            Exception demystifiedException = new Exception(innerException.Message, innerException).Demystify();
+            var demystifiedException = new Exception(innerException.Message, innerException).Demystify();
 
             // Assert
             var stackTrace = demystifiedException.ToString();

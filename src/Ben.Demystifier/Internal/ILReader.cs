@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Reflection.Emit;
 
 namespace System.Diagnostics.Internal
@@ -12,10 +12,7 @@ namespace System.Diagnostics.Internal
         private int ptr;
 
 
-        public ILReader(byte[] cil)
-        {
-            _cil = cil;
-        }
+        public ILReader(byte[] cil) => _cil = cil;
 
         public OpCode OpCode { get; private set; }
         public int MetadataToken { get; private set; }
@@ -34,7 +31,7 @@ namespace System.Diagnostics.Internal
 
         OpCode ReadOpCode()
         {
-            byte instruction = ReadByte();
+            var instruction = ReadByte();
             if (instruction < 254)
                 return singleByteOpCode[instruction];
             else
@@ -71,18 +68,15 @@ namespace System.Diagnostics.Internal
             return null;
         }
 
-        byte ReadByte()
-        {
-            return _cil[ptr++];
-        }
+        byte ReadByte() => _cil[ptr++];
 
         int ReadInt()
         {
-            byte b1 = ReadByte();
-            byte b2 = ReadByte();
-            byte b3 = ReadByte();
-            byte b4 = ReadByte();
-            return (int)b1 | (((int)b2) << 8) | (((int)b3) << 16) | (((int)b4) << 24);
+            var b1 = ReadByte();
+            var b2 = ReadByte();
+            var b3 = ReadByte();
+            var b4 = ReadByte();
+            return b1 | b2 << 8 | b3 << 16 | b4 << 24;
         }
 
         static ILReader()
@@ -90,11 +84,11 @@ namespace System.Diagnostics.Internal
             singleByteOpCode = new OpCode[225];
             doubleByteOpCode = new OpCode[31];
 
-            FieldInfo[] fields = GetOpCodeFields();
+            var fields = GetOpCodeFields();
 
-            for (int i = 0; i < fields.Length; i++)
+            for (var i = 0; i < fields.Length; i++)
             {
-                OpCode code = (OpCode)fields[i].GetValue(null);
+                var code = (OpCode)fields[i].GetValue(null);
                 if (code.OpCodeType == OpCodeType.Nternal)
                     continue;
 
@@ -105,9 +99,6 @@ namespace System.Diagnostics.Internal
             }
         }
 
-        static FieldInfo[] GetOpCodeFields()
-        {
-            return typeof(OpCodes).GetFields(BindingFlags.Public | BindingFlags.Static);
-        }
+        static FieldInfo[] GetOpCodeFields() => typeof(OpCodes).GetFields(BindingFlags.Public | BindingFlags.Static);
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -38,10 +38,7 @@ class Program
     }
 
     [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
-    Program(Action action)
-    {
-        RunAction((state) => _action((s) => action(), state), null);
-    }
+    Program(Action action) => RunAction((state) => _action((s) => action(), state), null);
 
     [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
     static IEnumerable<string> Iterator(int startAt)
@@ -75,31 +72,23 @@ class Program
     }
 
     [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
-    static void RunAction(Action<object> lambda, object state)
-    {
-        lambda(state);
-    }
+    static void RunAction(Action<object> lambda, object state) => lambda(state);
 
     [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
-    static string RunLambda(Func<string> lambda)
-    {
-
-        return lambda();
-    }
+    static string RunLambda(Func<string> lambda) => lambda();
 
     [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
     static (string val, bool) Method(string value)
     {
+#pragma warning disable IDE0039 // Use local function
         Func<string> func = () => MethodAsync(value).GetAwaiter().GetResult();
+#pragma warning restore IDE0039 // Use local function
         var anonType = new { func };
         return (RunLambda(() => anonType.func()), true);
     }
 
     [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
-    static ref string RefMethod(int value)
-    {
-        return ref s;
-    }
+    static ref string RefMethod(int value) => ref s;
 
     [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
     static string RefMethod(in string value)
@@ -137,16 +126,10 @@ class Program
     }
 
     [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
-    static ref string RefMethod(bool value)
-    {
-        return ref s;
-    }
+    static ref string RefMethod(bool value) => ref s;
 
     [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
-    static void Start((string val, bool) param)
-    {
-        s_action.Invoke(param.val, param.Item2);
-    }
+    static void Start((string val, bool) param) => s_action.Invoke(param.val, param.Item2);
 
 
     class GenericClass<TSuperType>

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Ben A Adams. All rights reserved.
+// Copyright (c) Ben A Adams. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 namespace System.Collections.Generic.Enumerable
@@ -12,10 +12,7 @@ namespace System.Collections.Generic.Enumerable
     {
         private readonly IList<T> _list;
 
-        public EnumerableIList(IList<T> list)
-        {
-            _list = list;
-        }
+        public EnumerableIList(IList<T> list) => _list = list;
 
         public EnumeratorIList<T> GetEnumerator() => new EnumeratorIList<T>(_list);
 

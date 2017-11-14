@@ -14,7 +14,7 @@ namespace Demystify
         public void ProducesReadableFrames()
         {
             // Arrange
-            Exception exception = GetMixedStackException();
+            var exception = GetMixedStackException();
 
             // Act
             var methodNames = new EnhancedStackTrace(exception)
@@ -91,16 +91,10 @@ namespace Demystify
         }
 
         [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
-        static async Task<string> MethodAsync<TValue>(TValue value)
-        {
-            return await MethodAsync(1);
-        }
+        static async Task<string> MethodAsync<TValue>(TValue value) => await MethodAsync(1);
 
         [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
-        static (string val, bool) Method(string value)
-        {
-            return (MethodAsync(value).GetAwaiter().GetResult(), true);
-        }
+        static (string val, bool) Method(string value) => (MethodAsync(value).GetAwaiter().GetResult(), true);
 
         [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
         static ref string RefMethod(string value)
@@ -110,10 +104,7 @@ namespace Demystify
         }
 
         [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
-        static void Start((string val, bool) param)
-        {
-            s_action.Invoke(param.val, param.Item2);
-        }
+        static void Start((string val, bool) param) => s_action.Invoke(param.val, param.Item2);
 
         static Action<string, bool> s_action = (string s, bool b) => s_func(s, b);
         static Func<string, bool, (string val, bool)> s_func = (string s, bool b) => (RefMethod(s), b);
