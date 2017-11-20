@@ -11,7 +11,7 @@ The current output was good for C# 1.0; but has become progressively worse since
 
 ### Make error logs more productive
 
-Output the modern C# 7.0 features in stack traces in an understable fashion that looks like the source code that generated them.
+Output the modern C# 7.0 features in stack traces in an understandable fashion that looks like the source code that generated them.
 
 [![Demystified stacktrace](https://aoa.blob.core.windows.net/aspnet/stacktrace-demystified.png)](https://aoa.blob.core.windows.net/aspnet/stacktrace-demystified.png)
 
@@ -157,4 +157,4 @@ Which is far less helpful, and close to jibberish in places
    Do not match code, output as `Int64`, `Boolean`, `String` rather than `long`, `bool`, `string`
 * **return types**
 
-   Skipped entirely from method signiture
+   Skipped entirely from method signature
