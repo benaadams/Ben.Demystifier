@@ -335,26 +335,33 @@ namespace System.Diagnostics
                     }
                 }
 
-                var rawIL = methodBody?.GetILAsByteArray();
-                if (rawIL == null) continue;
-
-                var reader = new ILReader(rawIL);
-                while (reader.Read(candidateMethod))
+                try
                 {
-                    if (reader.Operand is MethodBase mb)
+                    var rawIL = methodBody?.GetILAsByteArray();
+                    if (rawIL == null) continue;
+                    var reader = new ILReader(rawIL);
+                    while (reader.Read(candidateMethod))
                     {
-                        if (method == mb || (matchHint != null && method.Name.Contains(matchHint)))
+                        if (reader.Operand is MethodBase mb)
                         {
-                            if (kind == GeneratedNameKind.LambdaMethod)
+                            if (method == mb || (matchHint != null && method.Name.Contains(matchHint)))
                             {
-                                GetOrdinal(method, ref ordinal);
-                            }
+                                if (kind == GeneratedNameKind.LambdaMethod)
+                                {
+                                    GetOrdinal(method, ref ordinal);
+                                }
 
-                            method = candidateMethod;
-                            type = method.DeclaringType;
-                            return true;
+                                method = candidateMethod;
+                                type = method.DeclaringType;
+                                return true;
+                            }
                         }
                     }
+                }
+                catch
+                {
+                    // https://github.com/benaadams/Ben.Demystifier/issues/32
+                    // Skip methods where il can't be interpreted
                 }
             }
 
