@@ -183,15 +183,18 @@ namespace System.Diagnostics
                         Prefix = "",
                         Name = "",
                         Type = TypeNameHelper.GetTypeDisplayName(mi.ReturnType, fullName: false, includeGenericParameterNames: true).ToString(),
+                        ResolvedType = mi.ReturnType,
                     };
                 }
             }
 
             if (method.IsGenericMethod)
             {
-                var genericArguments = string.Join(", ", method.GetGenericArguments()
+                var genericArguments = method.GetGenericArguments();
+                var genericArgumentsString = string.Join(", ", genericArguments
                     .Select(arg => TypeNameHelper.GetTypeDisplayName(arg, fullName: false, includeGenericParameterNames: true)));
-                methodDisplayInfo.GenericArguments += "<" + genericArguments + ">";
+                methodDisplayInfo.GenericArguments += "<" + genericArgumentsString + ">";
+                methodDisplayInfo.ResolvedGenericArguments = genericArguments;
             }
 
             // Method parameters
@@ -535,6 +538,7 @@ namespace System.Diagnostics
                     Prefix = prefix,
                     Name = parameter.Name,
                     Type = parameterTypeString,
+                    ResolvedType = parameterType,
                 };
             }
 
@@ -566,6 +570,7 @@ namespace System.Diagnostics
                 Prefix = prefix,
                 Name = parameter.Name,
                 Type = parameterTypeString,
+                ResolvedType = parameterType,
             };
         }
 
@@ -605,6 +610,7 @@ namespace System.Diagnostics
                 Prefix = prefix,
                 Name = name,
                 Type = sb.ToString(),
+                ResolvedType = parameterType,
             };
         }
 
