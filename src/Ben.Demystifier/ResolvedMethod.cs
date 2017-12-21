@@ -130,7 +130,7 @@ namespace System.Diagnostics
                 builder.Append(")");
                 if (IsLambda)
                 {
-                    builder.Append("=>{}");
+                    builder.Append(" => { }");
 
                     if (Ordinal.HasValue)
                     {

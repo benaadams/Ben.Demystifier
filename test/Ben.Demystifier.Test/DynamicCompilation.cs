@@ -42,7 +42,7 @@ namespace Demystify
                 // Remove items that vary between test runners
                 .Where(s =>
                     s != "   at void System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, object state)" &&
-                    s != "   at Task Demystify.DynamicCompilation.DoesNotPreventStackTrace()+()=>{}"
+                    s != "   at Task Demystify.DynamicCompilation.DoesNotPreventStackTrace()+() => { }"
                 )
                 .ToArray();
 

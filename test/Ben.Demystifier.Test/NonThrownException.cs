@@ -34,7 +34,7 @@ namespace Demystify
             Assert.Equal(
                 new[] {     
                     "System.Exception: Exception of type 'System.Exception' was thrown. ---> System.Exception: Exception of type 'System.Exception' was thrown.",
-                    "   at Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()+()=>{}",
+                    "   at Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()+() => { }",
                     "   at async Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()",
                     "   --- End of inner exception stack trace ---"}, 
                 trace);
@@ -57,7 +57,7 @@ namespace Demystify
             Assert.Equal(
                 new[] {
                     "System.Exception: Exception of type 'System.Exception' was thrown. ---> System.Exception: Exception of type 'System.Exception' was thrown.",
-                    "   at Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()+()=>{}",
+                    "   at Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()+() => { }",
                     "   at async Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()",
                     "   --- End of inner exception stack trace ---",
                     "   at async Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()"
