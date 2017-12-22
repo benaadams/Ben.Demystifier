@@ -291,7 +291,8 @@ namespace System.Diagnostics
             var candidateConstructors = dt.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(m => m.Name == matchName);
             if (TryResolveSourceMethod(candidateConstructors, kind, matchHint, ref method, ref type, out ordinal)) return true;
 
-            while (true)
+            const int MaxResolveDepth = 10;
+            for (var i = 0; i < MaxResolveDepth; i++)
             {
                 dt = dt.DeclaringType;
                 if (dt == null)
@@ -316,6 +317,8 @@ namespace System.Diagnostics
                     }
                 }
             }
+
+            return false;
         }
 
         private static bool TryResolveSourceMethod(IEnumerable<MethodBase> candidateMethods, GeneratedNameKind kind, string matchHint, ref MethodBase method, ref Type type, out int? ordinal)
