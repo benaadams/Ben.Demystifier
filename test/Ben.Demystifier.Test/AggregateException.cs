@@ -38,7 +38,7 @@ namespace Demystify
             var trace = string.Join("", stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
                 // Remove items that vary between test runners
                 .Where(s =>
-                    s != "   at Task Demystify.DynamicCompilation.DoesNotPreventStackTrace()+()=>{}" &&
+                    s != "   at Task Demystify.DynamicCompilation.DoesNotPreventStackTrace()+() => { }" &&
                     !s.Contains("System.Threading.Tasks.Task.WaitAll")
                 )
                 .Skip(1)
@@ -48,18 +48,18 @@ namespace Demystify
 
             var expected = string.Join("", new[] {
                     "   at async Task Demystify.AggregateException.Throw1()",
-                    "   at async void Demystify.AggregateException.DemystifiesAggregateExceptions()+(?)=>{}",
+                    "   at async void Demystify.AggregateException.DemystifiesAggregateExceptions()+(?) => { }",
                     "   --- End of inner exception stack trace ---",
                     "   at void Demystify.AggregateException.DemystifiesAggregateExceptions()",
                     "---> (Inner Exception #0) System.ArgumentException: Value does not fall within the expected range.",
                     "   at async Task Demystify.AggregateException.Throw1()",
-                    "   at async void Demystify.AggregateException.DemystifiesAggregateExceptions()+(?)=>{}",
+                    "   at async void Demystify.AggregateException.DemystifiesAggregateExceptions()+(?) => { }",
                     "---> (Inner Exception #1) System.NullReferenceException: Object reference not set to an instance of an object.",
                     "   at async Task Demystify.AggregateException.Throw2()",
-                    "   at async void Demystify.AggregateException.DemystifiesAggregateExceptions()+(?)=>{}",
+                    "   at async void Demystify.AggregateException.DemystifiesAggregateExceptions()+(?) => { }",
                     "---> (Inner Exception #2) System.InvalidOperationException: Operation is not valid due to the current state of the object.",
                     "   at async Task Demystify.AggregateException.Throw3()",
-                    "   at async void Demystify.AggregateException.DemystifiesAggregateExceptions()+(?)=>{}"});
+                    "   at async void Demystify.AggregateException.DemystifiesAggregateExceptions()+(?) => { }"});
 
             Assert.Equal(expected, trace);
         }
