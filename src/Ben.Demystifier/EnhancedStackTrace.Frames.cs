@@ -78,7 +78,7 @@ namespace System.Diagnostics
             }
         }
 
-        private static ResolvedMethod GetMethodDisplayString(MethodBase originMethod)
+        public static ResolvedMethod GetMethodDisplayString(MethodBase originMethod)
         {
             // Special case: no method available
             if (originMethod == null)
