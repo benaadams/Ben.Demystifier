@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Demystify
+namespace Ben.Demystifier.Test
 {
     public class NonThrownException
     {
@@ -34,8 +34,8 @@ namespace Demystify
             Assert.Equal(
                 new[] {     
                     "System.Exception: Exception of type 'System.Exception' was thrown. ---> System.Exception: Exception of type 'System.Exception' was thrown.",
-                    "   at Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()+() => { }",
-                    "   at async Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()",
+                    "   at Task Ben.Demystifier.Test.NonThrownException.DoesNotPreventThrowStackTrace()+() => { }",
+                    "   at async Task Ben.Demystifier.Test.NonThrownException.DoesNotPreventThrowStackTrace()",
                     "   --- End of inner exception stack trace ---"}, 
                 trace);
 
@@ -57,10 +57,10 @@ namespace Demystify
             Assert.Equal(
                 new[] {
                     "System.Exception: Exception of type 'System.Exception' was thrown. ---> System.Exception: Exception of type 'System.Exception' was thrown.",
-                    "   at Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()+() => { }",
-                    "   at async Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()",
+                    "   at Task Ben.Demystifier.Test.NonThrownException.DoesNotPreventThrowStackTrace()+() => { }",
+                    "   at async Task Ben.Demystifier.Test.NonThrownException.DoesNotPreventThrowStackTrace()",
                     "   --- End of inner exception stack trace ---",
-                    "   at async Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()"
+                    "   at async Task Ben.Demystifier.Test.NonThrownException.DoesNotPreventThrowStackTrace()"
                 },
                 trace);
         }
