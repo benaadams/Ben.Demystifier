@@ -9,9 +9,8 @@
     <PackageProjectUrl>https://github.com/benaadams/Ben.Demystifier</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/benaadams/Ben.Demystifier/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
-    <IncludeSymbols>true</IncludeSymbols>
     <IncludeSource>true</IncludeSource>
-    <Version>0.0.7</Version>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -19,6 +18,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.1.17" PrivateAssets="all" />
+    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.7.6" PrivateAssets="all" />
     <PackageReference Include="System.Reflection.Metadata">
       <Version>1.5.0</Version>
     </PackageReference>
