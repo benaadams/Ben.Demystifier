@@ -1,7 +1,5 @@
 image: Visual Studio 2017
 
-shallow_clone: true
-
 branches:
   only:
   - master
@@ -22,7 +20,7 @@ nuget:
   disable_publish_on_pr: true
 
 build_script:
-- ps: .\build.ps1 -target appveyor -buildAssemblyVersion ($env:BuildVersion + $env:APPVEYOR_BUILD_NUMBER) -buildSemanticVersion ($env:BuildSemanticVersion + $env:APPVEYOR_BUILD_NUMBER)
+- ps: .\build.ps1 -target appveyor 
   
 test: off
 
