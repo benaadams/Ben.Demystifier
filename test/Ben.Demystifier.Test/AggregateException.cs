@@ -33,7 +33,7 @@ namespace Ben.Demystifier.Test
 
             // Assert
             var stackTrace = demystifiedException.ToString();
-            stackTrace = ReplaceLineEndings.Replace(stackTrace, "");
+            stackTrace = LineEndingsHelper.RemoveLineEndings(stackTrace);
             var trace = string.Join("", stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
                 // Remove items that vary between test runners
                 .Where(s =>
@@ -80,8 +80,5 @@ namespace Ben.Demystifier.Test
             await Task.Delay(1).ConfigureAwait(false);
             throw new InvalidOperationException();
         }
-
-
-        private Regex ReplaceLineEndings = new Regex(" in [^\n\r]+");
     }
 }
