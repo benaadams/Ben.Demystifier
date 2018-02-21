@@ -37,7 +37,7 @@ namespace Ben.Demystifier.Test
 
             // Assert
             var stackTrace = demystifiedException.ToString();
-            stackTrace = ReplaceLineEndings.Replace(stackTrace, "");
+            stackTrace = LineEndingsHelper.RemoveLineEndings(stackTrace);
             var trace = stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.None)
                 // Remove items that vary between test runners
                 .Where(s =>
@@ -53,7 +53,5 @@ namespace Ben.Demystifier.Test
                     "   at async Task Ben.Demystifier.Test.DynamicCompilation.DoesNotPreventStackTrace()"}, 
                 trace);
         }
-
-        private Regex ReplaceLineEndings = new Regex(" in [^\n\r]+");
     }
 }

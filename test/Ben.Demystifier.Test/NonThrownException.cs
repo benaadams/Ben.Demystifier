@@ -28,7 +28,7 @@ namespace Ben.Demystifier.Test
 
             // Assert
             var stackTrace = demystifiedException.ToString();
-            stackTrace = ReplaceLineEndings.Replace(stackTrace, "");
+            stackTrace = LineEndingsHelper.RemoveLineEndings(stackTrace);
             var trace = stackTrace.Split(new[]{Environment.NewLine}, StringSplitOptions.None);
 
             Assert.Equal(
@@ -51,7 +51,7 @@ namespace Ben.Demystifier.Test
 
             // Assert
             stackTrace = demystifiedException.ToString();
-            stackTrace = ReplaceLineEndings.Replace(stackTrace, "");
+            stackTrace = LineEndingsHelper.RemoveLineEndings(stackTrace);
             trace = stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
             Assert.Equal(
@@ -76,7 +76,7 @@ namespace Ben.Demystifier.Test
 
             // Assert
             var stackTrace = est.ToString();
-            stackTrace = ReplaceLineEndings.Replace(stackTrace, "");
+            stackTrace = LineEndingsHelper.RemoveLineEndings(stackTrace);
             var trace = stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.None)
                 // Remove Full framework entries
                 .Where(s => !s.StartsWith("   at bool System.Threading._ThreadPoolWaitCallbac") &&
@@ -88,7 +88,5 @@ namespace Ben.Demystifier.Test
                     "   at bool System.Threading.ThreadPoolWorkQueue.Dispatch()"},
                 trace);
         }
-
-        private Regex ReplaceLineEndings = new Regex(" in [^\n\r]+");
     }
 }
