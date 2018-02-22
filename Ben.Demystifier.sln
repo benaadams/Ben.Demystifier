@@ -13,7 +13,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ben.Demystifier.Test", "tes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{455921D3-DD54-4355-85CF-F4009DF2AB70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackTrace", "sample\StackTrace\StackTrace.csproj", "{E161FC12-53C2-47CD-A5FC-3684B86723A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StackTrace", "sample\StackTrace\StackTrace.csproj", "{E161FC12-53C2-47CD-A5FC-3684B86723A9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5937ACDF-0059-488E-9604-D84689C72933}"
+	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
+		build.ps1 = build.ps1
+		directory.build.props = directory.build.props
+		README.md = README.md
+		version.json = version.json
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ben.Demystifier.Benchmarks", "test\Ben.Demystifier.Benchmarks\Ben.Demystifier.Benchmarks.csproj", "{EF5557DF-C48E-4999-846C-D99A92E86373}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +44,10 @@ Global
 		{E161FC12-53C2-47CD-A5FC-3684B86723A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E161FC12-53C2-47CD-A5FC-3684B86723A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E161FC12-53C2-47CD-A5FC-3684B86723A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF5557DF-C48E-4999-846C-D99A92E86373}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{EF5557DF-C48E-4999-846C-D99A92E86373}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{EF5557DF-C48E-4999-846C-D99A92E86373}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF5557DF-C48E-4999-846C-D99A92E86373}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -41,6 +56,7 @@ Global
 		{5410A056-89AB-4912-BD1E-A63616AD91D0} = {A2FCCAAC-BE90-4F7E-B95F-A72D46DDD6B3}
 		{B9E150B0-AEEB-4D98-8BE1-92C1296699A2} = {59CA6310-4AA5-4093-95D4-472B94DC0CD4}
 		{E161FC12-53C2-47CD-A5FC-3684B86723A9} = {455921D3-DD54-4355-85CF-F4009DF2AB70}
+		{EF5557DF-C48E-4999-846C-D99A92E86373} = {59CA6310-4AA5-4093-95D4-472B94DC0CD4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {841B7D5F-E810-4F94-A529-002C7E075216}

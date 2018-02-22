@@ -43,6 +43,22 @@ namespace System.Diagnostics
             return builder.ToString();
         }
 
+        /// <summary>
+        /// Returns a name of given generic type without '`'.
+        /// </summary>
+        public static string GetTypeNameForGenericType(Type type)
+        {
+            if (!type.IsGenericType)
+            {
+                throw new ArgumentException("The given type should be generic", nameof(type));
+            }
+
+            var genericPartIndex = type.Name.IndexOf('`');
+            Debug.Assert(genericPartIndex >= 0);
+
+            return type.Name.Substring(0, genericPartIndex);
+        }
+
         private static void ProcessType(StringBuilder builder, Type type, DisplayNameOptions options)
         {
             if (type.IsGenericType)

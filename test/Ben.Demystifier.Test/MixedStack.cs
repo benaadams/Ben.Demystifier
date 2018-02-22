@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Demystify
+namespace Ben.Demystifier.Test
 {
     public class MixedStack
     {
@@ -57,16 +57,16 @@ namespace Demystify
 
         static List<string> ExpectedCallStack = new List<string>()
         {
-            "IEnumerable<string> Demystify.MixedStack.Iterator()+MoveNext()",
+            "IEnumerable<string> Ben.Demystifier.Test.MixedStack.Iterator()+MoveNext()",
             "string string.Join(string separator, IEnumerable<string> values)",
-            "string Demystify.MixedStack+GenericClass<T>.GenericMethod<V>(ref V value)",
-            "async Task<string> Demystify.MixedStack.MethodAsync(int value)",
-            "async Task<string> Demystify.MixedStack.MethodAsync<TValue>(TValue value)",
-            "(string val, bool) Demystify.MixedStack.Method(string value)",
-            "ref string Demystify.MixedStack.RefMethod(string value)",
-            "(string val, bool) Demystify.MixedStack.s_func(string s, bool b)",
-            "void Demystify.MixedStack.s_action(string s, bool b)",
-            "void Demystify.MixedStack.Start((string val, bool) param)"
+            "string Ben.Demystifier.Test.MixedStack+GenericClass<T>.GenericMethod<V>(ref V value)",
+            "async Task<string> Ben.Demystifier.Test.MixedStack.MethodAsync(int value)",
+            "async Task<string> Ben.Demystifier.Test.MixedStack.MethodAsync<TValue>(TValue value)",
+            "(string val, bool) Ben.Demystifier.Test.MixedStack.Method(string value)",
+            "ref string Ben.Demystifier.Test.MixedStack.RefMethod(string value)",
+            "(string val, bool) Ben.Demystifier.Test.MixedStack.s_func(string s, bool b)",
+            "void Ben.Demystifier.Test.MixedStack.s_action(string s, bool b)",
+            "void Ben.Demystifier.Test.MixedStack.Start((string val, bool) param)"
 
         };
 

@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Demystify
+namespace Ben.Demystifier.Test
 {
     public class DynamicCompilation
     {
@@ -37,12 +37,12 @@ namespace Demystify
 
             // Assert
             var stackTrace = demystifiedException.ToString();
-            stackTrace = ReplaceLineEndings.Replace(stackTrace, "");
+            stackTrace = LineEndingsHelper.RemoveLineEndings(stackTrace);
             var trace = stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.None)
                 // Remove items that vary between test runners
                 .Where(s =>
                     s != "   at void System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, object state)" &&
-                    s != "   at Task Demystify.DynamicCompilation.DoesNotPreventStackTrace()+() => { }"
+                    s != "   at Task Ben.Demystifier.Test.DynamicCompilation.DoesNotPreventStackTrace()+() => { }"
                 )
                 .ToArray();
 
@@ -50,10 +50,8 @@ namespace Demystify
                 new[] {
                     "System.ArgumentException: Message",
                     "   at void lambda_method(Closure)",
-                    "   at async Task Demystify.DynamicCompilation.DoesNotPreventStackTrace()"}, 
+                    "   at async Task Ben.Demystifier.Test.DynamicCompilation.DoesNotPreventStackTrace()"}, 
                 trace);
         }
-
-        private Regex ReplaceLineEndings = new Regex(" in [^\n\r]+");
     }
 }

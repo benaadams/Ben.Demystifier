@@ -19,7 +19,6 @@ namespace System.Diagnostics
 {
     public partial class EnhancedStackTrace
     {
-
         private static List<EnhancedStackFrame> GetFrames(Exception exception)
         {
             if (exception == null)
@@ -516,7 +515,7 @@ namespace System.Diagnostics
                 {
                     foreach (var attrib in attribs)
                     {
-                        if (attrib is Attribute att && att.GetType().Namespace == "System.Runtime.CompilerServices" && att.GetType().Name == "IsReadOnlyAttribute")
+                        if (attrib is Attribute att && att.GetType().IsReadOnlyAttribute())
                         {
                             return "in";
                         }
@@ -580,6 +579,32 @@ namespace System.Diagnostics
 
         private static ResolvedParameter GetValueTupleParameter(IList<string> tupleNames, string prefix, string name, Type parameterType)
         {
+            string typeName;
+
+            if (parameterType.IsValueTuple())
+            {
+                typeName = GetValueTupleParameterName(tupleNames, parameterType);
+
+            }
+            else
+            {
+                // Need to unwrap the first generic argument first.
+                var genericTypeName = TypeNameHelper.GetTypeNameForGenericType(parameterType);
+                var valueTupleFullName = GetValueTupleParameterName(tupleNames, parameterType.GetGenericArguments()[0]);
+                typeName = $"{genericTypeName}<{valueTupleFullName}>";
+            }
+
+            return new ResolvedParameter
+            {
+                Prefix = prefix,
+                Name = name,
+                Type = typeName,
+                ResolvedType = parameterType,
+            };
+        }
+
+        private static string GetValueTupleParameterName(IList<string> tupleNames, Type parameterType)
+        {
             var sb = new StringBuilder();
             sb.Append("(");
             var args = parameterType.GetGenericArguments();
@@ -608,14 +633,7 @@ namespace System.Diagnostics
             }
 
             sb.Append(")");
-
-            return new ResolvedParameter
-            {
-                Prefix = prefix,
-                Name = name,
-                Type = sb.ToString(),
-                ResolvedType = parameterType,
-            };
+            return sb.ToString();
         }
 
         private static bool ShowInStackTrace(MethodBase method)

@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Demystify
+namespace Ben.Demystifier.Test
 {
     public class NonThrownException
     {
@@ -28,14 +28,14 @@ namespace Demystify
 
             // Assert
             var stackTrace = demystifiedException.ToString();
-            stackTrace = ReplaceLineEndings.Replace(stackTrace, "");
+            stackTrace = LineEndingsHelper.RemoveLineEndings(stackTrace);
             var trace = stackTrace.Split(new[]{Environment.NewLine}, StringSplitOptions.None);
 
             Assert.Equal(
                 new[] {     
                     "System.Exception: Exception of type 'System.Exception' was thrown. ---> System.Exception: Exception of type 'System.Exception' was thrown.",
-                    "   at Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()+() => { }",
-                    "   at async Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()",
+                    "   at Task Ben.Demystifier.Test.NonThrownException.DoesNotPreventThrowStackTrace()+() => { }",
+                    "   at async Task Ben.Demystifier.Test.NonThrownException.DoesNotPreventThrowStackTrace()",
                     "   --- End of inner exception stack trace ---"}, 
                 trace);
 
@@ -51,16 +51,16 @@ namespace Demystify
 
             // Assert
             stackTrace = demystifiedException.ToString();
-            stackTrace = ReplaceLineEndings.Replace(stackTrace, "");
+            stackTrace = LineEndingsHelper.RemoveLineEndings(stackTrace);
             trace = stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
             Assert.Equal(
                 new[] {
                     "System.Exception: Exception of type 'System.Exception' was thrown. ---> System.Exception: Exception of type 'System.Exception' was thrown.",
-                    "   at Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()+() => { }",
-                    "   at async Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()",
+                    "   at Task Ben.Demystifier.Test.NonThrownException.DoesNotPreventThrowStackTrace()+() => { }",
+                    "   at async Task Ben.Demystifier.Test.NonThrownException.DoesNotPreventThrowStackTrace()",
                     "   --- End of inner exception stack trace ---",
-                    "   at async Task Demystify.NonThrownException.DoesNotPreventThrowStackTrace()"
+                    "   at async Task Ben.Demystifier.Test.NonThrownException.DoesNotPreventThrowStackTrace()"
                 },
                 trace);
         }
@@ -76,7 +76,7 @@ namespace Demystify
 
             // Assert
             var stackTrace = est.ToString();
-            stackTrace = ReplaceLineEndings.Replace(stackTrace, "");
+            stackTrace = LineEndingsHelper.RemoveLineEndings(stackTrace);
             var trace = stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.None)
                 // Remove Full framework entries
                 .Where(s => !s.StartsWith("   at bool System.Threading._ThreadPoolWaitCallbac") &&
@@ -88,7 +88,5 @@ namespace Demystify
                     "   at bool System.Threading.ThreadPoolWorkQueue.Dispatch()"},
                 trace);
         }
-
-        private Regex ReplaceLineEndings = new Regex(" in [^\n\r]+");
     }
 }

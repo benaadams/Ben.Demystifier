@@ -158,3 +158,11 @@ Which is far less helpful, and close to jibberish in places
 * **return types**
 
    Skipped entirely from method signature
+
+### Benchmarks
+
+To run benchmarks from the repository root:
+```
+dotnet run -p .\test\Ben.Demystifier.Benchmarks\ -c Release -f netcoreapp2.0 All
+```
+<sub>Note: we're only kicking off via `netcoreapp2.0`, benchmarks will run for all configured platforms like `net462`.</sub>

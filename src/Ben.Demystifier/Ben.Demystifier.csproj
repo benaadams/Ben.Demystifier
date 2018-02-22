@@ -9,17 +9,19 @@
     <PackageProjectUrl>https://github.com/benaadams/Ben.Demystifier</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/benaadams/Ben.Demystifier/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
-    <IncludeSymbols>true</IncludeSymbols>
     <IncludeSource>true</IncludeSource>
-    <Version>0.0.7</Version>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
-    <LangVersion>7.1</LangVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.1.17" PrivateAssets="all" />
+    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.7.6" PrivateAssets="all" />
     <PackageReference Include="System.Reflection.Metadata">
       <Version>1.5.0</Version>
     </PackageReference>
