@@ -1,9 +1,10 @@
-﻿// Copyright (c) Ben A Adams. All rights reserved.
+// Copyright (c) Ben A Adams. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Generic.Enumerable;
+using System.IO;
 using System.Text;
 
 namespace System.Diagnostics
@@ -104,21 +105,9 @@ namespace System.Diagnostics
                 var filePath = frame.GetFileName();
                 if (!string.IsNullOrEmpty(filePath))
                 {
-                    try
-                    {
-                        sb.Append(" in ");
-                        var uri = new Uri(filePath);
-                        if (uri.IsFile)
-                        {
-                            sb.Append(System.IO.Path.GetFullPath(filePath));
-                        }
-                        else
-                        {
-                            sb.Append(uri);
-                        }
-                    }
-                    catch
-                    { }
+                    sb.Append(" in ");
+                    sb.Append(TryGetFullPath(filePath));
+
                 }
 
                 var lineNo = frame.GetFileLineNumber();
@@ -133,5 +122,27 @@ namespace System.Diagnostics
         EnumerableIList<EnhancedStackFrame> GetEnumerator() => EnumerableIList.Create(_frames);
         IEnumerator<EnhancedStackFrame> IEnumerable<EnhancedStackFrame>.GetEnumerator() => _frames.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => _frames.GetEnumerator();
+
+        /// <summary>
+        /// Tries to convert a given <paramref name="filePath"/> to a full path.
+        /// Returns original value if the conversion isn't possible or a given path is relative.
+        /// </summary>
+        public static string TryGetFullPath(string filePath)
+        {
+            try
+            {
+                var uri = new Uri(filePath);
+                if (uri.IsFile)
+                {
+                    return uri.AbsolutePath;
+                }
+                
+                return uri.ToString();
+            }
+            catch (ArgumentException) { }
+            catch (UriFormatException) { }
+
+            return filePath;
+        }
     }
 }
