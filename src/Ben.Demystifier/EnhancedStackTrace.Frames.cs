@@ -19,7 +19,7 @@ namespace System.Diagnostics
 {
     public partial class EnhancedStackTrace
     {
-        private static List<EnhancedStackFrame> GetFrames(Exception exception)
+        private List<EnhancedStackFrame> GetFrames(Exception exception)
         {
             if (exception == null)
             {
@@ -32,7 +32,7 @@ namespace System.Diagnostics
             return GetFrames(stackTrace);
         }
 
-        private static List<EnhancedStackFrame> GetFrames(StackTrace stackTrace)
+        private List<EnhancedStackFrame> GetFrames(StackTrace stackTrace)
         {
             var frames = new List<EnhancedStackFrame>();
             var stackFrames = stackTrace.GetFrames();
@@ -67,7 +67,7 @@ namespace System.Diagnostics
                         portablePdbReader.PopulateStackFrame(frame, method, frame.GetILOffset(), out fileName, out row, out column);
                     }
 
-                    var stackFrame = new EnhancedStackFrame(frame, GetMethodDisplayString(method), fileName, row, column);
+                    var stackFrame = new EnhancedStackFrame(frame, GetMethodDisplayString(method, _useReflectionForTuples), fileName, row, column);
 
 
                     frames.Add(stackFrame);
@@ -77,7 +77,7 @@ namespace System.Diagnostics
             }
         }
 
-        public static ResolvedMethod GetMethodDisplayString(MethodBase originMethod)
+        public static ResolvedMethod GetMethodDisplayString(MethodBase originMethod, bool useReflection = false)
         {
             // Special case: no method available
             if (originMethod == null)
@@ -173,7 +173,7 @@ namespace System.Diagnostics
                 var returnParameter = mi.ReturnParameter;
                 if (returnParameter != null)
                 {
-                    methodDisplayInfo.ReturnParameter = GetParameter(mi.ReturnParameter);
+                    methodDisplayInfo.ReturnParameter = GetParameter(mi.ReturnParameter, useReflection);
                 }
                 else if (mi.ReturnType != null)
                 {
@@ -203,7 +203,7 @@ namespace System.Diagnostics
                 var parameterList = new List<ResolvedParameter>(parameters.Length);
                 foreach (var parameter in parameters)
                 {
-                    parameterList.Add(GetParameter(parameter));
+                    parameterList.Add(GetParameter(parameter, useReflection));
                 }
 
                 methodDisplayInfo.Parameters = parameterList;
@@ -221,7 +221,7 @@ namespace System.Diagnostics
                     var parameterList = new List<ResolvedParameter>(parameters.Length);
                     foreach (var parameter in parameters)
                     {
-                        var param = GetParameter(parameter);
+                        var param = GetParameter(parameter, useReflection);
                         if (param.Name?.StartsWith("<") ?? true) continue;
 
                         parameterList.Add(param);
@@ -528,7 +528,7 @@ namespace System.Diagnostics
             return string.Empty;
         }
 
-        private static ResolvedParameter GetParameter(ParameterInfo parameter)
+        private static ResolvedParameter GetParameter(ParameterInfo parameter, bool useReflection = false)
         {
             var parameterType = parameter.ParameterType;
             var prefix = GetPrefix(parameter, parameterType);
@@ -549,15 +549,15 @@ namespace System.Diagnostics
             {
                 var customAttribs = parameter.GetCustomAttributes(inherit: false);
 
-                if ((customAttribs?.Length ?? 0) > 0)
-                {
-                    var tupleNames = customAttribs
-                        .OfType<TupleElementNamesAttribute>().FirstOrDefault()?.TransformNames;
+                var tupleNameAttribute = customAttribs.OfType<Attribute>().FirstOrDefault(a => a.IsTupleElementNameAttribue());
 
-                    if (tupleNames?.Count > 0)
-                    {
-                        return GetValueTupleParameter(tupleNames, prefix, parameter.Name, parameterType);
-                    }
+                var tupleNames = useReflection
+                    ? tupleNameAttribute?.GetTransformerNames()
+                    : (tupleNameAttribute as System.Runtime.CompilerServices.TupleElementNamesAttribute)?.TransformNames;
+
+                if (tupleNames?.Count > 0)
+                {
+                    return GetValueTupleParameter(tupleNames, prefix, parameter.Name, parameterType);
                 }
             }
 
