@@ -15,8 +15,6 @@ namespace System.Diagnostics
 
         private readonly List<EnhancedStackFrame> _frames;
 
-        private readonly bool _useReflectionForTuples;
-
         // Summary:
         //     Initializes a new instance of the System.Diagnostics.StackTrace class using the
         //     provided exception object.
@@ -28,14 +26,13 @@ namespace System.Diagnostics
         // Exceptions:
         //   T:System.ArgumentNullException:
         //     The parameter e is null.
-        public EnhancedStackTrace(Exception e, bool useReflection = false)
+        public EnhancedStackTrace(Exception e)
         {
             if (e == null)
             {
                 throw new ArgumentNullException(nameof(e));
             }
 
-            _useReflectionForTuples = useReflection;
             _frames = GetFrames(e);
         }
 

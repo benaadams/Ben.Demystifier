@@ -19,11 +19,8 @@ namespace Ben.Demystifier.Benchmarks
         [Benchmark(Description = "(left, right).ToString()")]
         public string ToStringForTupleBased() => GetException(() => ReturnsTuple()).ToString();
 
-        [Benchmark(Description = "(left, right).Demystify(useReflection: true).ToString()")]
+        [Benchmark(Description = "(left, right).Demystify().ToString()")]
         public string ToDemystifyForTupleBased() => GetException(() => ReturnsTuple()).Demystify().ToString();
-
-        [Benchmark(Description = "(left, right).Demystify(useReflection:false).ToString()")]
-        public string ToDemystifyForTupleBasedReflectionFalse() => GetException(() => ReturnsTuple()).Demystify(useReflection: false).ToString();
 
         private static Exception GetException(Action action)
         {

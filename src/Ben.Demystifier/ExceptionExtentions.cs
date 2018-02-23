@@ -12,8 +12,8 @@ namespace System.Diagnostics
     {
         private static readonly FieldInfo stackTraceString = typeof(Exception).GetField("_stackTraceString", BindingFlags.Instance | BindingFlags.NonPublic);
 
-        public static T Demystify<T>(this T exception, bool useReflection = true) where T : Exception
-            => Demystify(exception, originalStacksTracker: null, useReflection: useReflection);
+        public static T Demystify<T>(this T exception) where T : Exception
+            => Demystify(exception, originalStacksTracker: null);
 
         private static string GetStackTracesString(this Exception exception)
             => (string)stackTraceString.GetValue(exception);
@@ -24,7 +24,7 @@ namespace System.Diagnostics
         /// <summary>
         /// Demystifies the given <paramref name="exception"/> and tracks the original stack traces for the whole exception tree.
         /// </summary>
-        private static T Demystify<T>(this T exception, Dictionary<Exception, string> originalStacksTracker, bool useReflection = true) where T : Exception
+        private static T Demystify<T>(this T exception, Dictionary<Exception, string> originalStacksTracker) where T : Exception
         {
             try
             {
@@ -33,7 +33,7 @@ namespace System.Diagnostics
                     originalStacksTracker[exception] = exception.GetStackTracesString();
                 }
 
-                var stackTrace = new EnhancedStackTrace(exception, useReflection);
+                var stackTrace = new EnhancedStackTrace(exception);
 
                 if (stackTrace.FrameCount > 0)
                 {

@@ -67,7 +67,7 @@ namespace System.Diagnostics
                         portablePdbReader.PopulateStackFrame(frame, method, frame.GetILOffset(), out fileName, out row, out column);
                     }
 
-                    var stackFrame = new EnhancedStackFrame(frame, GetMethodDisplayString(method, _useReflectionForTuples), fileName, row, column);
+                    var stackFrame = new EnhancedStackFrame(frame, GetMethodDisplayString(method), fileName, row, column);
 
 
                     frames.Add(stackFrame);
@@ -77,7 +77,7 @@ namespace System.Diagnostics
             }
         }
 
-        public static ResolvedMethod GetMethodDisplayString(MethodBase originMethod, bool useReflection = false)
+        public static ResolvedMethod GetMethodDisplayString(MethodBase originMethod)
         {
             // Special case: no method available
             if (originMethod == null)
@@ -173,7 +173,7 @@ namespace System.Diagnostics
                 var returnParameter = mi.ReturnParameter;
                 if (returnParameter != null)
                 {
-                    methodDisplayInfo.ReturnParameter = GetParameter(mi.ReturnParameter, useReflection);
+                    methodDisplayInfo.ReturnParameter = GetParameter(mi.ReturnParameter);
                 }
                 else if (mi.ReturnType != null)
                 {
@@ -203,7 +203,7 @@ namespace System.Diagnostics
                 var parameterList = new List<ResolvedParameter>(parameters.Length);
                 foreach (var parameter in parameters)
                 {
-                    parameterList.Add(GetParameter(parameter, useReflection));
+                    parameterList.Add(GetParameter(parameter));
                 }
 
                 methodDisplayInfo.Parameters = parameterList;
@@ -221,7 +221,7 @@ namespace System.Diagnostics
                     var parameterList = new List<ResolvedParameter>(parameters.Length);
                     foreach (var parameter in parameters)
                     {
-                        var param = GetParameter(parameter, useReflection);
+                        var param = GetParameter(parameter);
                         if (param.Name?.StartsWith("<") ?? true) continue;
 
                         parameterList.Add(param);
@@ -551,9 +551,7 @@ namespace System.Diagnostics
 
                 var tupleNameAttribute = customAttribs.OfType<Attribute>().FirstOrDefault(a => a.IsTupleElementNameAttribue());
 
-                var tupleNames = useReflection
-                    ? tupleNameAttribute?.GetTransformerNames()
-                    : (tupleNameAttribute as System.Runtime.CompilerServices.TupleElementNamesAttribute)?.TransformNames;
+                var tupleNames = tupleNameAttribute?.GetTransformerNames();
 
                 if (tupleNames?.Count > 0)
                 {
