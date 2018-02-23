@@ -19,7 +19,7 @@ namespace System.Diagnostics
 {
     public partial class EnhancedStackTrace
     {
-        private List<EnhancedStackFrame> GetFrames(Exception exception)
+        private static List<EnhancedStackFrame> GetFrames(Exception exception)
         {
             if (exception == null)
             {
@@ -32,7 +32,7 @@ namespace System.Diagnostics
             return GetFrames(stackTrace);
         }
 
-        private List<EnhancedStackFrame> GetFrames(StackTrace stackTrace)
+        private static List<EnhancedStackFrame> GetFrames(StackTrace stackTrace)
         {
             var frames = new List<EnhancedStackFrame>();
             var stackFrames = stackTrace.GetFrames();
@@ -508,7 +508,8 @@ namespace System.Diagnostics
             {
                 return "out";
             }
-            else if (parameterType != null && parameterType.IsByRef)
+
+            if (parameterType != null && parameterType.IsByRef)
             {
                 var attribs = parameter.GetCustomAttributes(inherit: false);
                 if (attribs?.Length > 0)
@@ -528,7 +529,7 @@ namespace System.Diagnostics
             return string.Empty;
         }
 
-        private static ResolvedParameter GetParameter(ParameterInfo parameter, bool useReflection = false)
+        private static ResolvedParameter GetParameter(ParameterInfo parameter)
         {
             var parameterType = parameter.ParameterType;
             var prefix = GetPrefix(parameter, parameterType);
