@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -22,7 +20,7 @@ namespace Ben.Demystifier.Test
         {
             try
             {
-                SimpleMethodThatThrows().Wait();
+                SimpleMethodThatThrows(null).Wait();
             }
             catch (Exception e)
             {
@@ -39,9 +37,14 @@ namespace Ben.Demystifier.Test
                 Assert.Equal(original, afterDemystified);
             }
 
-            async Task SimpleMethodThatThrows()
+            async Task SimpleMethodThatThrows(string value)
             {
-                throw new InvalidOperationException("message");
+                if (value == null)
+                {
+                    throw new InvalidOperationException("message");
+                }
+
+                await Task.Yield();
             }
         }
     }

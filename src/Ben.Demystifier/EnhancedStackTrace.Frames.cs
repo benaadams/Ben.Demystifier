@@ -508,7 +508,8 @@ namespace System.Diagnostics
             {
                 return "out";
             }
-            else if (parameterType != null && parameterType.IsByRef)
+
+            if (parameterType != null && parameterType.IsByRef)
             {
                 var attribs = parameter.GetCustomAttributes(inherit: false);
                 if (attribs?.Length > 0)
@@ -549,15 +550,13 @@ namespace System.Diagnostics
             {
                 var customAttribs = parameter.GetCustomAttributes(inherit: false);
 
-                if ((customAttribs?.Length ?? 0) > 0)
-                {
-                    var tupleNames = customAttribs
-                        .OfType<TupleElementNamesAttribute>().FirstOrDefault()?.TransformNames;
+                var tupleNameAttribute = customAttribs.OfType<Attribute>().FirstOrDefault(a => a.IsTupleElementNameAttribue());
 
-                    if (tupleNames?.Count > 0)
-                    {
-                        return GetValueTupleParameter(tupleNames, prefix, parameter.Name, parameterType);
-                    }
+                var tupleNames = tupleNameAttribute?.GetTransformerNames();
+
+                if (tupleNames?.Count > 0)
+                {
+                    return GetValueTupleParameter(tupleNames, prefix, parameter.Name, parameterType);
                 }
             }
 
