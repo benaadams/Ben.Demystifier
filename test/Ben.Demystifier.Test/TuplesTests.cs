@@ -20,7 +20,6 @@ namespace Ben.Demystifier.Test
             catch (Exception ex)
             {
                 demystifiedException = ex.Demystify();
-                demystifiedException = ex.Demystify(false);
             }
 
             // Assert
