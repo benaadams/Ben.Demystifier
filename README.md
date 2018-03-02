@@ -20,6 +20,10 @@ Output the modern C# 7.0 features in stack traces in an understandable fashion t
 ```
 exception.Demystify()
 ```
+Or instead of Environment.StackTrace
+```
+EnhancedStackTrace.Current()
+```
 Resolves the stack back to the C# source format of the calls (and is an inspectable list of stack frames)
 
 Calling `.ToString()` on the Demystified exception will produce a string stacktrace similar to the following (without the comments):
