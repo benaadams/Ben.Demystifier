@@ -4,7 +4,7 @@
     <Product>Ben Core</Product>
     <Title>Ben.Demystifier</Title>
     <Description>High performance understanding for stack traces (Make error logs more productive)</Description>
-    <Authors>ben_a_adams</Authors>
+    <Authors>Ben Adams</Authors>
     <RepositoryUrl>https://github.com/benaadams/Ben.Demystifier</RepositoryUrl>
     <PackageProjectUrl>https://github.com/benaadams/Ben.Demystifier</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/benaadams/Ben.Demystifier/blob/master/LICENSE</PackageLicenseUrl>
