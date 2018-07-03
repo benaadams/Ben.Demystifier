@@ -11,8 +11,8 @@ namespace System.Diagnostics
     {
         public MethodBase MethodBase { get; set; }
 
-        public string DeclaringTypeName { get; set; }
-
+        public Type DeclaringType { get; set; }
+        
         public bool IsAsync { get; set; }
 
         public bool IsLambda { get; set; }
@@ -39,11 +39,9 @@ namespace System.Diagnostics
 
         internal StringBuilder Append(StringBuilder builder)
         {
-
             if (IsAsync)
             {
-                builder
-                    .Append("async ");
+                builder.Append("async ");
             }
 
             if (ReturnParameter != null)
@@ -52,7 +50,7 @@ namespace System.Diagnostics
                 builder.Append(" ");
             }
 
-            if (!string.IsNullOrEmpty(DeclaringTypeName))
+            if (DeclaringType != null)
             {
 
                 if (Name == ".ctor")
@@ -60,17 +58,16 @@ namespace System.Diagnostics
                     if (string.IsNullOrEmpty(SubMethod) && !IsLambda)
                         builder.Append("new ");
 
-                    builder.Append(DeclaringTypeName);
+                    AppendDeclaringTypeName(builder);
                 }
                 else if (Name == ".cctor")
                 {
                     builder.Append("static ");
-                    builder.Append(DeclaringTypeName);
+                    AppendDeclaringTypeName(builder);
                 }
                 else
                 {
-                    builder
-                        .Append(DeclaringTypeName)
+                    AppendDeclaringTypeName(builder)
                         .Append(".")
                         .Append(Name);
                 }
@@ -144,6 +141,11 @@ namespace System.Diagnostics
             }
 
             return builder;
+        }
+
+        private StringBuilder AppendDeclaringTypeName(StringBuilder builder)
+        {
+            return DeclaringType != null ? builder.AppendTypeDisplayName(DeclaringType, fullName: true, includeGenericParameterNames: true) : builder;
         }
     }
 }
