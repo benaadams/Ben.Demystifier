@@ -1,5 +1,17 @@
-﻿<Project>
-  <PropertyGroup>
-    <LangVersion>7.2</LangVersion>
-  </PropertyGroup>
+<Project>
+    <PropertyGroup>
+        <LangVersion>7.2</LangVersion>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <SolutionDir>$(MSBuildThisFileDirectory)</SolutionDir>
+        <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+        <DebugType>embedded</DebugType>
+        <EmbedAllSources>true</EmbedAllSources>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <BaseIntermediateOutputPath>$(SolutionDir)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+        <OutputPath>$(SolutionDir)bin\$(MSBuildProjectName)\$(Configuration)\</OutputPath>
+    </PropertyGroup>
 </Project>

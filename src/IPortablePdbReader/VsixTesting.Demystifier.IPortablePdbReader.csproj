@@ -1,0 +1,7 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net45</TargetFramework>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>$(SolutionDir)/src/Ben.Demystifier/key.snk</AssemblyOriginatorKeyFile>
+    </PropertyGroup>
+</Project>

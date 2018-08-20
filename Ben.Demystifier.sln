@@ -7,7 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A2FCCAAC-BE9
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{59CA6310-4AA5-4093-95D4-472B94DC0CD4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ben.Demystifier", "src\Ben.Demystifier\Ben.Demystifier.csproj", "{5410A056-89AB-4912-BD1E-A63616AD91D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VsixTesting.Demystifier", "src\Ben.Demystifier\VsixTesting.Demystifier.csproj", "{5410A056-89AB-4912-BD1E-A63616AD91D0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F3EFE240-E5E3-4E0E-B03E-F59EF5E9F594} = {F3EFE240-E5E3-4E0E-B03E-F59EF5E9F594}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ben.Demystifier.Test", "test\Ben.Demystifier.Test\Ben.Demystifier.Test.csproj", "{B9E150B0-AEEB-4D98-8BE1-92C1296699A2}"
 EndProject
@@ -25,6 +28,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ben.Demystifier.Benchmarks", "test\Ben.Demystifier.Benchmarks\Ben.Demystifier.Benchmarks.csproj", "{EF5557DF-C48E-4999-846C-D99A92E86373}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VsixTesting.Demystifier.PortablePdbReader", "src\PortablePdbReader\VsixTesting.Demystifier.PortablePdbReader.csproj", "{F3EFE240-E5E3-4E0E-B03E-F59EF5E9F594}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VsixTesting.Demystifier.IPortablePdbReader", "src\IPortablePdbReader\VsixTesting.Demystifier.IPortablePdbReader.csproj", "{AA438B8D-184E-48F0-83D0-EA8D62C61D06}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +55,14 @@ Global
 		{EF5557DF-C48E-4999-846C-D99A92E86373}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{EF5557DF-C48E-4999-846C-D99A92E86373}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF5557DF-C48E-4999-846C-D99A92E86373}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3EFE240-E5E3-4E0E-B03E-F59EF5E9F594}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3EFE240-E5E3-4E0E-B03E-F59EF5E9F594}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3EFE240-E5E3-4E0E-B03E-F59EF5E9F594}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3EFE240-E5E3-4E0E-B03E-F59EF5E9F594}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA438B8D-184E-48F0-83D0-EA8D62C61D06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA438B8D-184E-48F0-83D0-EA8D62C61D06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA438B8D-184E-48F0-83D0-EA8D62C61D06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA438B8D-184E-48F0-83D0-EA8D62C61D06}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,6 +72,8 @@ Global
 		{B9E150B0-AEEB-4D98-8BE1-92C1296699A2} = {59CA6310-4AA5-4093-95D4-472B94DC0CD4}
 		{E161FC12-53C2-47CD-A5FC-3684B86723A9} = {455921D3-DD54-4355-85CF-F4009DF2AB70}
 		{EF5557DF-C48E-4999-846C-D99A92E86373} = {59CA6310-4AA5-4093-95D4-472B94DC0CD4}
+		{F3EFE240-E5E3-4E0E-B03E-F59EF5E9F594} = {A2FCCAAC-BE90-4F7E-B95F-A72D46DDD6B3}
+		{AA438B8D-184E-48F0-83D0-EA8D62C61D06} = {A2FCCAAC-BE90-4F7E-B95F-A72D46DDD6B3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {841B7D5F-E810-4F94-A529-002C7E075216}

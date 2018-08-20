@@ -3,38 +3,40 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
 using System.Reflection.PortableExecutable;
+using System.Runtime.Remoting;
 
 namespace System.Diagnostics.Internal
 {
     // Adapted from https://github.com/aspnet/Common/blob/dev/shared/Microsoft.Extensions.StackTrace.Sources/StackFrame/PortablePdbReader.cs
-    internal class PortablePdbReader : IDisposable
+    public class PortablePdbReader : MarshalByRefObject, IPortablePdbReader, IDisposable
     {
         private readonly Dictionary<string, MetadataReaderProvider> _cache =
             new Dictionary<string, MetadataReaderProvider>(StringComparer.Ordinal);
 
-        public void PopulateStackFrame(StackFrame frameInfo, MethodBase method, int IlOffset, out string fileName, out int row, out int column)
+        public override object InitializeLifetimeService() => null;
+
+        public void PopulateStackFrame(bool isMethodDynamic, string location, int methodTokenId, int IlOffset, out string fileName, out int row, out int column)
         {
             fileName = "";
             row = 0;
             column = 0;
 
-            if (method.Module.Assembly.IsDynamic)
+            if (isMethodDynamic)
             {
                 return;
             }
 
-            var metadataReader = GetMetadataReader(method.Module.Assembly.Location);
+            var metadataReader = GetMetadataReader(location);
 
             if (metadataReader == null)
             {
                 return;
             }
 
-            var methodToken = MetadataTokens.Handle(method.MetadataToken);
+            var methodToken = MetadataTokens.Handle(methodTokenId);
 
             Debug.Assert(methodToken.Kind == HandleKind.MethodDefinition);
 
@@ -133,6 +135,7 @@ namespace System.Diagnostics.Internal
             }
 
             _cache.Clear();
+            RemotingServices.Disconnect(this);
         }
     }
 }
