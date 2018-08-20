@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net45</TargetFramework>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>$(SolutionDir)/src/Ben.Demystifier/key.snk</AssemblyOriginatorKeyFile>
+    </PropertyGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\IPortablePdbReader\VsixTesting.Demystifier.IPortablePdbReader.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <Reference Include="System.Collections.Immutable" HintPath="..\..\references\System.Collections.Immutable.dll" />
+        <Reference Include="System.Reflection.Metadata" HintPath="..\..\references\System.Reflection.Metadata.dll" />
+    </ItemGroup>
+</Project>

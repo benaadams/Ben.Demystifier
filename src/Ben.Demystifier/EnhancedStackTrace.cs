@@ -44,7 +44,7 @@ namespace System.Diagnostics
                 throw new ArgumentNullException(nameof(stackTrace));
             }
 
-            _frames = GetFrames(stackTrace);
+            _frames = PreGetFrames(stackTrace);
         }
 
         /// <summary>
