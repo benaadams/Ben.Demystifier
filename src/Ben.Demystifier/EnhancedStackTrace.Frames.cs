@@ -136,19 +136,26 @@ namespace System.Diagnostics
                 {
                     if (methodName == ".cctor")
                     {
-                        var fields = type.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-                        foreach (var field in fields)
+                        if (type.IsGenericTypeDefinition && !type.IsConstructedGenericType)
                         {
-                            var value = field.GetValue(field);
-                            if (value is Delegate d)
+                            // TODO: diagnose type's generic type arguments from frame's "this" or something
+                        }
+                        else
+                        {
+                            var fields = type.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                            foreach (var field in fields)
                             {
-                                if (ReferenceEquals(d.Method, originMethod) &&
-                                    d.Target.ToString() == originMethod.DeclaringType.ToString())
+                                var value = field.GetValue(field);
+                                if (value is Delegate d)
                                 {
-                                    methodDisplayInfo.Name = field.Name;
-                                    methodDisplayInfo.IsLambda = false;
-                                    method = originMethod;
-                                    break;
+                                    if (ReferenceEquals(d.Method, originMethod) &&
+                                        d.Target.ToString() == originMethod.DeclaringType.ToString())
+                                    {
+                                        methodDisplayInfo.Name = field.Name;
+                                        methodDisplayInfo.IsLambda = false;
+                                        method = originMethod;
+                                        break;
+                                    }
                                 }
                             }
                         }
