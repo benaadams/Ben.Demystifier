@@ -47,5 +47,39 @@ namespace Ben.Demystifier.Test
                 await Task.Yield();
             }
         }
+
+
+        [Fact]
+        public void DemystifyKeepsMessage()
+        {
+            Exception ex = null;
+            try
+            {
+                throw new InvalidOperationException("aaa")
+                {
+                    Data =
+                    {
+                        ["bbb"] = "ccc",
+                        ["ddd"] = "eee",
+                    }
+                };
+            }
+            catch (Exception e)
+            {
+                ex = e;
+            }
+
+            var original = ex.ToString();
+            var endLine = (int)Math.Min((uint)original.IndexOf('\n'), original.Length);
+
+            original = original.Substring(0, endLine);
+
+            var stringDemystified = ex.ToStringDemystified();
+            endLine = (int)Math.Min((uint)stringDemystified.IndexOf('\n'), stringDemystified.Length);
+
+            stringDemystified = stringDemystified.Substring(0, endLine);
+
+            Assert.Equal(original, stringDemystified);
+        }
     }
 }
