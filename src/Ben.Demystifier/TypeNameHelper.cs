@@ -7,7 +7,7 @@ using System.Text;
 namespace System.Diagnostics
 {
     // Adapted from https://github.com/aspnet/Common/blob/dev/shared/Microsoft.Extensions.TypeNameHelper.Sources/TypeNameHelper.cs
-    public static class TypeNameHelper
+    public class TypeNameHelper
     {
         public static readonly Dictionary<Type, string> BuiltInTypeNames = new Dictionary<Type, string>
         {
@@ -41,12 +41,6 @@ namespace System.Diagnostics
             var builder = new StringBuilder();
             ProcessType(builder, type, new DisplayNameOptions(fullName, includeGenericParameterNames));
             return builder.ToString();
-        }
-
-        public static StringBuilder AppendTypeDisplayName(this StringBuilder builder, Type type, bool fullName = true, bool includeGenericParameterNames = false)
-        {
-            ProcessType(builder, type, new DisplayNameOptions(fullName, includeGenericParameterNames));
-            return builder;
         }
 
         /// <summary>

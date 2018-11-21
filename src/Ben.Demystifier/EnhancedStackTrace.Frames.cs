@@ -171,10 +171,11 @@ namespace System.Diagnostics
             // ResolveStateMachineMethod may have set declaringType to null
             if (type != null)
             {
-                methodDisplayInfo.DeclaringType = type;
+                var declaringTypeName = TypeNameHelper.GetTypeDisplayName(type, fullName: true, includeGenericParameterNames: true);
+                methodDisplayInfo.DeclaringTypeName = declaringTypeName;
             }
 
-            if (method is MethodInfo mi)
+            if (method is System.Reflection.MethodInfo mi)
             {
                 var returnParameter = mi.ReturnParameter;
                 if (returnParameter != null)
@@ -187,6 +188,7 @@ namespace System.Diagnostics
                     {
                         Prefix = "",
                         Name = "",
+                        Type = TypeNameHelper.GetTypeDisplayName(mi.ReturnType, fullName: false, includeGenericParameterNames: true).ToString(),
                         ResolvedType = mi.ReturnType,
                     };
                 }
@@ -538,6 +540,7 @@ namespace System.Diagnostics
         {
             var parameterType = parameter.ParameterType;
             var prefix = GetPrefix(parameter, parameterType);
+            var parameterTypeString = "?";
 
             if (parameterType == null)
             {
@@ -545,6 +548,7 @@ namespace System.Diagnostics
                 {
                     Prefix = prefix,
                     Name = parameter.Name,
+                    Type = parameterTypeString,
                     ResolvedType = parameterType,
                 };
             }
@@ -568,22 +572,40 @@ namespace System.Diagnostics
                 parameterType = parameterType.GetElementType();
             }
 
+            parameterTypeString = TypeNameHelper.GetTypeDisplayName(parameterType, fullName: false, includeGenericParameterNames: true);
+
             return new ResolvedParameter
             {
                 Prefix = prefix,
                 Name = parameter.Name,
+                Type = parameterTypeString,
                 ResolvedType = parameterType,
             };
         }
 
         private static ResolvedParameter GetValueTupleParameter(IList<string> tupleNames, string prefix, string name, Type parameterType)
         {
-            return new ValueTupleResolvedParameter
+            string typeName;
+
+            if (parameterType.IsValueTuple())
             {
-                TupleNames = tupleNames,
+                typeName = GetValueTupleParameterName(tupleNames, parameterType);
+
+            }
+            else
+            {
+                // Need to unwrap the first generic argument first.
+                var genericTypeName = TypeNameHelper.GetTypeNameForGenericType(parameterType);
+                var valueTupleFullName = GetValueTupleParameterName(tupleNames, parameterType.GetGenericArguments()[0]);
+                typeName = $"{genericTypeName}<{valueTupleFullName}>";
+            }
+
+            return new ResolvedParameter
+            {
                 Prefix = prefix,
                 Name = name,
-                ResolvedType = parameterType
+                Type = typeName,
+                ResolvedType = parameterType,
             };
         }
 
