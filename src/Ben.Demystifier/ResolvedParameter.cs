@@ -9,6 +9,8 @@ namespace System.Diagnostics
     {
         public string Name { get; set; }
 
+        public string Type { get; set; }
+
         public Type ResolvedType { get; set; }
 
         public string Prefix { get; set; }
@@ -23,15 +25,7 @@ namespace System.Diagnostics
                   .Append(" ");
             }
 
-            if (ResolvedType != null)
-            {
-                AppendTypeName(sb);
-            }
-            else
-            {
-                sb.Append("?");
-            }
-
+            sb.Append(Type);
             if (!string.IsNullOrEmpty(Name))
             {
                 sb.Append(" ")
@@ -39,11 +33,6 @@ namespace System.Diagnostics
             }
 
             return sb;
-        }
-
-        protected virtual void AppendTypeName(StringBuilder sb) 
-        {
-            sb.AppendTypeDisplayName(ResolvedType, fullName: false, includeGenericParameterNames: true);
         }
     }
 }
