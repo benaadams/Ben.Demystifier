@@ -14,6 +14,13 @@ namespace System.Diagnostics
             {
                 var stackTrace = new EnhancedStackTrace(exception);
 
+                builder.Append(exception.GetType());
+                if (!string.IsNullOrEmpty(exception.Message))
+                {
+                    builder.Append(": ").Append(exception.Message);
+                }
+                builder.Append(Environment.NewLine);
+
                 if (stackTrace.FrameCount > 0)
                 {
                     stackTrace.Append(builder);
