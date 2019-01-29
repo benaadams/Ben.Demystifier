@@ -41,6 +41,7 @@ namespace System.Diagnostics.Internal
         MemberInfo ReadOperand(OpCode code, MethodBase methodInfo)
         {
             MetadataToken = 0;
+            int inlineLength;
             switch (code.OperandType)
             {
                 case OperandType.InlineMethod:
@@ -64,7 +65,47 @@ namespace System.Diagnostics.Internal
                         // Can return System.ArgumentException : Token xxx is not a valid MemberInfo token in the scope of module xxx.dll
                         return null;
                     }
+
+                case OperandType.InlineNone:
+                    inlineLength = 0;
+                    break;
+
+                case OperandType.ShortInlineBrTarget:
+                case OperandType.ShortInlineVar:
+                    inlineLength = 1;
+                    break;
+
+                case OperandType.InlineVar:
+                    inlineLength = 2;
+                    break;
+
+                case OperandType.InlineBrTarget:
+                case OperandType.InlineField:
+                case OperandType.InlineI:
+                case OperandType.InlineString:
+                case OperandType.InlineSig:
+                case OperandType.InlineSwitch:
+                case OperandType.InlineTok:
+                case OperandType.InlineType:
+                case OperandType.ShortInlineR:
+                    inlineLength = 4;
+                    break;
+
+                case OperandType.InlineI8:
+                case OperandType.InlineR:
+                    inlineLength = 8;
+                    break;
+
+                default:
+                    // Can return System.ArgumentException : Unexpected operand type xxx
+                    return null;
             }
+
+            for (var i = 0; i < inlineLength; i++)
+            {
+                ReadByte();
+            }
+
             return null;
         }
 
