@@ -27,4 +27,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup Label="TestInternalsVisibleTo">
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+        <_Parameter1>$(AssemblyName).Test, PublicKey=00240000048000009400000006020000002400005253413100040000010001005532489e147c0de0c5872048d20f7acf99d172a599d217950eba8fdbd1f98fa5ac47901b076d2bd7da8d436e6b5d6292694902e9748514bb0c3b17e6a0e0386f22447847c1c5cd9e034f79a8fe1c120a12785f7f79617414e63861cf13d6fd1cbb4211b87202c6a52c1e22962a6bd310413c37ca440fad14ab8422707517fbae</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
 </Project>
