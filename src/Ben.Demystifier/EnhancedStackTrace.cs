@@ -134,7 +134,7 @@ namespace System.Diagnostics
                 var uri = new Uri(filePath);
                 if (uri.IsFile)
                 {
-                    return uri.AbsolutePath;
+                    return Uri.UnescapeDataString(uri.AbsolutePath);
                 }
                 
                 return uri.ToString();

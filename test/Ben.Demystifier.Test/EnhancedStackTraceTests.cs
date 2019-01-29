@@ -21,6 +21,15 @@ namespace Ben.Demystifier.Test
             Assert.Equal(expected, NormalizePath(converted));
         }
 
+        [Theory]
+        [InlineData(@"file://Sources\My 100%.Done+Solution\Foo`1.cs", @"/My 100%.Done+Solution/Foo`1.cs")]
+        [InlineData(@"d:\Public Files+50%.Done\Src\Foo`1.cs", @"d:/Public Files+50%.Done/Src/Foo`1.cs")]
+        public void SpecialPathCharactersAreHandledCorrectly(string original, string expected)
+        {
+            var converted = EnhancedStackTrace.TryGetFullPath(original);
+            Assert.Equal(expected, converted);
+        }
+
         // Used in tests to avoid platform-specific issues.
         private static string NormalizePath(string path)
             => path.Replace("\\", "/");
