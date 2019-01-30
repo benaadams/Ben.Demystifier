@@ -19,6 +19,8 @@ namespace System.Diagnostics
 {
     public partial class EnhancedStackTrace
     {
+        private static readonly Type StackTraceHiddenAttibuteType = Type.GetType("System.Diagnostics.StackTraceHiddenAttribute", false);
+
         private static List<EnhancedStackFrame> GetFrames(Exception exception)
         {
             if (exception == null)
@@ -645,60 +647,59 @@ namespace System.Diagnostics
         private static bool ShowInStackTrace(MethodBase method)
         {
             Debug.Assert(method != null);
-            try
+            var type = method.DeclaringType;
+            if (type == typeof(Task<>) && method.Name == "InnerInvoke")
             {
-                var type = method.DeclaringType;
-                if (type == typeof(Task<>) && method.Name == "InnerInvoke")
+                return false;
+            }
+            if (type == typeof(Task))
+            {
+                switch (method.Name)
+                {
+                    case "ExecuteWithThreadLocal":
+                    case "Execute":
+                    case "ExecutionContextCallback":
+                    case "ExecuteEntry":
+                    case "InnerInvoke":
+                        return false;
+                }
+            }
+            if (type == typeof(ExecutionContext))
+            {
+                switch (method.Name)
+                {
+                    case "RunInternal":
+                    case "Run":
+                        return false;
+                }
+            }
+
+            if (StackTraceHiddenAttibuteType != null)
+            {
+                // Don't show any methods marked with the StackTraceHiddenAttribute
+                // https://github.com/dotnet/coreclr/pull/14652
+                if (IsStackTraceHidden(method))
                 {
                     return false;
                 }
-                if (type == typeof(Task))
-                {
-                    switch (method.Name)
-                    {
-                        case "ExecuteWithThreadLocal":
-                        case "Execute":
-                        case "ExecutionContextCallback":
-                        case "ExecuteEntry":
-                        case "InnerInvoke":
-                            return false;
-                    }
-                }
-                if (type == typeof(ExecutionContext))
-                {
-                    switch (method.Name)
-                    {
-                        case "RunInternal":
-                        case "Run":
-                            return false;
-                    }
-                }
+            }
 
-                // Don't show any methods marked with the StackTraceHiddenAttribute
+            if (type == null)
+            {
+                return true;
+            }
+
+            if (StackTraceHiddenAttibuteType != null)
+            {
+                // Don't show any types marked with the StackTraceHiddenAttribute
                 // https://github.com/dotnet/coreclr/pull/14652
-                foreach (var attibute in EnumerableIList.Create(method.GetCustomAttributesData()))
+                if (IsStackTraceHidden(type))
                 {
-                    // internal Attribute, match on name
-                    if (attibute.AttributeType.Name == "StackTraceHiddenAttribute")
-                    {
-                        return false;
-                    }
+                    return false;
                 }
-
-                if (type == null)
-                {
-                    return true;
-                }
-
-                foreach (var attibute in EnumerableIList.Create(type.GetCustomAttributesData()))
-                {
-                    // internal Attribute, match on name
-                    if (attibute.AttributeType.Name == "StackTraceHiddenAttribute")
-                    {
-                        return false;
-                    }
-                }
-
+            }
+            else
+            {
                 // Fallbacks for runtime pre-StackTraceHiddenAttribute
                 if (type == typeof(ExceptionDispatchInfo) && method.Name == "Throw")
                 {
@@ -723,13 +724,37 @@ namespace System.Diagnostics
                     return false;
                 }
             }
-            catch
-            {
-                // GetCustomAttributesData can throw
-                return true;
-            }
 
             return true;
+        }
+
+        private static bool IsStackTraceHidden(MemberInfo memberInfo)
+        {
+            if (!memberInfo.Module.Assembly.ReflectionOnly)
+            {
+                return memberInfo.GetCustomAttributes(StackTraceHiddenAttibuteType, false).Length != 0;
+            }
+
+            EnumerableIList<CustomAttributeData> attributes;
+            try
+            {
+                attributes = EnumerableIList.Create(memberInfo.GetCustomAttributesData());
+            }
+            catch (NotImplementedException)
+            {
+                return false;
+            }
+
+            foreach (var attribute in attributes)
+            {
+                // reflection-only attribute, match on name
+                if (attribute.AttributeType.FullName == StackTraceHiddenAttibuteType.FullName)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private static bool TryResolveStateMachineMethod(ref MethodBase method, out Type declaringType)
