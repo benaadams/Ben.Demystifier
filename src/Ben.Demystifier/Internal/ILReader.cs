@@ -72,6 +72,7 @@ namespace System.Diagnostics.Internal
 
                 case OperandType.ShortInlineBrTarget:
                 case OperandType.ShortInlineVar:
+                case OperandType.ShortInlineI:
                     inlineLength = 1;
                     break;
 
@@ -97,7 +98,6 @@ namespace System.Diagnostics.Internal
                     break;
 
                 default:
-                    // Can return System.ArgumentException : Unexpected operand type xxx
                     return null;
             }
 
