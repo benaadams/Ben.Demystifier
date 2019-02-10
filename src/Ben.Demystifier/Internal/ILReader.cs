@@ -72,6 +72,7 @@ namespace System.Diagnostics.Internal
 
                 case OperandType.ShortInlineBrTarget:
                 case OperandType.ShortInlineVar:
+                case OperandType.ShortInlineI:
                     inlineLength = 1;
                     break;
 
