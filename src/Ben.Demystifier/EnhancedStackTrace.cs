@@ -129,18 +129,10 @@ namespace System.Diagnostics
         /// </summary>
         public static string TryGetFullPath(string filePath)
         {
-            try
+            if (Uri.TryCreate(filePath, UriKind.Absolute, out var uri) && uri.IsFile)
             {
-                var uri = new Uri(filePath);
-                if (uri.IsFile)
-                {
-                    return uri.AbsolutePath;
-                }
-                
-                return uri.ToString();
+                return Uri.UnescapeDataString(uri.AbsolutePath);
             }
-            catch (ArgumentException) { }
-            catch (UriFormatException) { }
 
             return filePath;
         }
