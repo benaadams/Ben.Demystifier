@@ -98,7 +98,6 @@ namespace System.Diagnostics.Internal
                     break;
 
                 default:
-                    // Can return System.ArgumentException : Unexpected operand type xxx
                     return null;
             }
 
