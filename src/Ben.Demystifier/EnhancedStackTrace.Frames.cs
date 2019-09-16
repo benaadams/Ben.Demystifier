@@ -689,6 +689,10 @@ namespace System.Diagnostics
                 }
                 else if (type == typeof(TaskAwaiter) ||
                     type == typeof(TaskAwaiter<>) ||
+                    type == typeof(ValueTaskAwaiter) ||
+                    type == typeof(ValueTaskAwaiter<>) ||
+                    type == typeof(ConfiguredValueTaskAwaitable.ConfiguredValueTaskAwaiter) ||
+                    type == typeof(ConfiguredValueTaskAwaitable<>.ConfiguredValueTaskAwaiter) ||
                     type == typeof(ConfiguredTaskAwaitable.ConfiguredTaskAwaiter) ||
                     type == typeof(ConfiguredTaskAwaitable<>.ConfiguredTaskAwaiter))
                 {
