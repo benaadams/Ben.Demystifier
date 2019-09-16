@@ -51,7 +51,7 @@ namespace System.Diagnostics
                 {
                     var frame = stackFrames[i];
                     var method = frame.GetMethod();
-
+                    
                     // Always show last stackFrame
                     if (!ShowInStackTrace(method) && i < stackFrames.Length - 1)
                     {
@@ -627,6 +627,10 @@ namespace System.Diagnostics
             Debug.Assert(method != null);
             var type = method.DeclaringType;
             if (type == typeof(Task<>) && method.Name == "InnerInvoke")
+            {
+                return false;
+            }
+            if (type == typeof(ValueTask<>) && method.Name == "get_Result")
             {
                 return false;
             }
