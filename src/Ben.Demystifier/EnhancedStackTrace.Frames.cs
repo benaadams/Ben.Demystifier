@@ -625,7 +625,24 @@ namespace System.Diagnostics
         private static bool ShowInStackTrace(MethodBase method)
         {
             Debug.Assert(method != null);
+            
+            if (StackTraceHiddenAttibuteType != null)
+            {
+                // Don't show any methods marked with the StackTraceHiddenAttribute
+                // https://github.com/dotnet/coreclr/pull/14652
+                if (IsStackTraceHidden(method))
+                {
+                    return false;
+                }
+            }
+            
             var type = method.DeclaringType;
+            
+            if (type == null)
+            {
+                return true;
+            }
+            
             if (type == typeof(Task<>) && method.Name == "InnerInvoke")
             {
                 return false;
@@ -650,21 +667,6 @@ namespace System.Diagnostics
                     case "Run":
                         return false;
                 }
-            }
-
-            if (StackTraceHiddenAttibuteType != null)
-            {
-                // Don't show any methods marked with the StackTraceHiddenAttribute
-                // https://github.com/dotnet/coreclr/pull/14652
-                if (IsStackTraceHidden(method))
-                {
-                    return false;
-                }
-            }
-
-            if (type == null)
-            {
-                return true;
             }
 
             if (StackTraceHiddenAttibuteType != null)
