@@ -19,7 +19,7 @@ namespace System.Diagnostics
 {
     public partial class EnhancedStackTrace
     {
-        private static readonly Type StackTraceHiddenAttibuteType = Type.GetType("System.Diagnostics.StackTraceHiddenAttribute", false);
+        private static readonly Type StackTraceHiddenAttributeType = Type.GetType("System.Diagnostics.StackTraceHiddenAttribute", false);
 
         private static List<EnhancedStackFrame> GetFrames(Exception exception)
         {
@@ -626,7 +626,7 @@ namespace System.Diagnostics
         {
             Debug.Assert(method != null);
             
-            if (StackTraceHiddenAttibuteType != null)
+            if (StackTraceHiddenAttributeType != null)
             {
                 // Don't show any methods marked with the StackTraceHiddenAttribute
                 // https://github.com/dotnet/coreclr/pull/14652
@@ -669,7 +669,7 @@ namespace System.Diagnostics
                 }
             }
 
-            if (StackTraceHiddenAttibuteType != null)
+            if (StackTraceHiddenAttributeType != null)
             {
                 // Don't show any types marked with the StackTraceHiddenAttribute
                 // https://github.com/dotnet/coreclr/pull/14652
@@ -712,7 +712,7 @@ namespace System.Diagnostics
         {
             if (!memberInfo.Module.Assembly.ReflectionOnly)
             {
-                return memberInfo.GetCustomAttributes(StackTraceHiddenAttibuteType, false).Length != 0;
+                return memberInfo.GetCustomAttributes(StackTraceHiddenAttributeType, false).Length != 0;
             }
 
             EnumerableIList<CustomAttributeData> attributes;
@@ -728,7 +728,7 @@ namespace System.Diagnostics
             foreach (var attribute in attributes)
             {
                 // reflection-only attribute, match on name
-                if (attribute.AttributeType.FullName == StackTraceHiddenAttibuteType.FullName)
+                if (attribute.AttributeType.FullName == StackTraceHiddenAttributeType.FullName)
                 {
                     return true;
                 }
