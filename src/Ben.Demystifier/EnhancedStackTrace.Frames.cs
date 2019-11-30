@@ -759,18 +759,10 @@ namespace System.Diagnostics
             }
 
             var methods = parentType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-            if (methods == null)
-            {
-                return false;
-            }
 
             foreach (var candidateMethod in methods)
             {
                 var attributes = candidateMethod.GetCustomAttributes<StateMachineAttribute>();
-                if (attributes == null)
-                {
-                    continue;
-                }
 
                 foreach (var asma in attributes)
                 {
