@@ -51,7 +51,7 @@ namespace System.Diagnostics
                 {
                     var frame = stackFrames[i];
                     var method = frame.GetMethod();
-
+                    
                     // Always show last stackFrame
                     if (!ShowInStackTrace(method) && i < stackFrames.Length - 1)
                     {
@@ -647,6 +647,10 @@ namespace System.Diagnostics
             {
                 return false;
             }
+            if (type == typeof(ValueTask<>) && method.Name == "get_Result")
+            {
+                return false;
+            }
             if (type == typeof(Task))
             {
                 switch (method.Name)
@@ -687,6 +691,10 @@ namespace System.Diagnostics
                 }
                 else if (type == typeof(TaskAwaiter) ||
                     type == typeof(TaskAwaiter<>) ||
+                    type == typeof(ValueTaskAwaiter) ||
+                    type == typeof(ValueTaskAwaiter<>) ||
+                    type == typeof(ConfiguredValueTaskAwaitable.ConfiguredValueTaskAwaiter) ||
+                    type == typeof(ConfiguredValueTaskAwaitable<>.ConfiguredValueTaskAwaiter) ||
                     type == typeof(ConfiguredTaskAwaitable.ConfiguredTaskAwaiter) ||
                     type == typeof(ConfiguredTaskAwaitable<>.ConfiguredTaskAwaiter))
                 {

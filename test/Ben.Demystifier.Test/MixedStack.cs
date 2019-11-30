@@ -39,13 +39,12 @@ namespace Ben.Demystifier.Test
             }
         }
 
-
         Exception GetMixedStackException()
         {
             Exception exception = null;
             try
             {
-                Start((val:"", true));
+                Start((val: "", true));
             }
             catch (Exception ex)
             {
@@ -61,7 +60,7 @@ namespace Ben.Demystifier.Test
             "string string.Join(string separator, IEnumerable<string> values)",
             "string Ben.Demystifier.Test.MixedStack+GenericClass<T>.GenericMethod<V>(ref V value)",
             "async Task<string> Ben.Demystifier.Test.MixedStack.MethodAsync(int value)",
-            "async Task<string> Ben.Demystifier.Test.MixedStack.MethodAsync<TValue>(TValue value)",
+            "async ValueTask<string> Ben.Demystifier.Test.MixedStack.MethodAsync<TValue>(TValue value)",
             "(string val, bool) Ben.Demystifier.Test.MixedStack.Method(string value)",
             "ref string Ben.Demystifier.Test.MixedStack.RefMethod(string value)",
             "(string val, bool) Ben.Demystifier.Test.MixedStack.s_func(string s, bool b)",
@@ -91,7 +90,7 @@ namespace Ben.Demystifier.Test
         }
 
         [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
-        static async Task<string> MethodAsync<TValue>(TValue value) => await MethodAsync(1);
+        static async ValueTask<string> MethodAsync<TValue>(TValue value) => await MethodAsync(1);
 
         [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
         static (string val, bool) Method(string value) => (MethodAsync(value).GetAwaiter().GetResult(), true);
