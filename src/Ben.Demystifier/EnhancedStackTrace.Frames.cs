@@ -509,27 +509,20 @@ namespace System.Diagnostics
             return -1;
         }
 
-        private static string GetPrefix(ParameterInfo parameter, Type parameterType)
+        private static string GetPrefix(ParameterInfo parameter)
         {
             if (parameter.IsOut)
             {
                 return "out";
             }
 
-            if (parameterType != null && parameterType.IsByRef)
+            if (parameter.IsIn)
             {
-                var attribs = parameter.GetCustomAttributes(inherit: false);
-                if (attribs?.Length > 0)
-                {
-                    foreach (var attrib in attribs)
-                    {
-                        if (attrib is Attribute att && att.GetType().IsReadOnlyAttribute())
-                        {
-                            return "in";
-                        }
-                    }
-                }
+                return "in";
+            }
 
+            if (parameter.ParameterType.IsByRef)
+            {
                 return "ref";
             }
 
@@ -538,18 +531,8 @@ namespace System.Diagnostics
 
         private static ResolvedParameter GetParameter(ParameterInfo parameter)
         {
+            var prefix = GetPrefix(parameter);
             var parameterType = parameter.ParameterType;
-            var prefix = GetPrefix(parameter, parameterType);
-
-            if (parameterType == null)
-            {
-                return new ResolvedParameter
-                {
-                    Prefix = prefix,
-                    Name = parameter.Name,
-                    ResolvedType = parameterType,
-                };
-            }
 
             if (parameterType.IsGenericType)
             {
@@ -625,7 +608,7 @@ namespace System.Diagnostics
         private static bool ShowInStackTrace(MethodBase method)
         {
             Debug.Assert(method != null);
-            
+
             if (StackTraceHiddenAttributeType != null)
             {
                 // Don't show any methods marked with the StackTraceHiddenAttribute
