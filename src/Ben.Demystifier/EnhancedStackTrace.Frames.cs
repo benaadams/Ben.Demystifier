@@ -51,7 +51,7 @@ namespace System.Diagnostics
                 {
                     var frame = stackFrames[i];
                     var method = frame.GetMethod();
-                    
+
                     // Always show last stackFrame
                     if (!ShowInStackTrace(method) && i < stackFrames.Length - 1)
                     {
@@ -511,6 +511,11 @@ namespace System.Diagnostics
 
         private static string GetPrefix(ParameterInfo parameter)
         {
+            if (Attribute.IsDefined(parameter, typeof(ParamArrayAttribute), false))
+            {
+                return "params";
+            }
+
             if (parameter.IsOut)
             {
                 return "out";
@@ -618,14 +623,14 @@ namespace System.Diagnostics
                     return false;
                 }
             }
-            
+
             var type = method.DeclaringType;
-            
+
             if (type == null)
             {
                 return true;
             }
-            
+
             if (type == typeof(Task<>) && method.Name == "InnerInvoke")
             {
                 return false;
