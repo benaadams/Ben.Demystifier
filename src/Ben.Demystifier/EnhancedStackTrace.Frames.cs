@@ -563,6 +563,7 @@ namespace System.Diagnostics
                 Prefix = prefix,
                 Name = parameter.Name,
                 ResolvedType = parameterType,
+                IsDynamicType = parameter.IsDefined(typeof(DynamicAttribute), false)
             };
         }
 
