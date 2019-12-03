@@ -69,8 +69,17 @@ namespace System.Diagnostics
         {
             if (type.IsGenericType)
             {
-                var genericArguments = type.GetGenericArguments();
-                ProcessGenericType(builder, type, genericArguments, genericArguments.Length, options);
+                var underlyingType = Nullable.GetUnderlyingType(type);
+                if (underlyingType != null)
+                {
+                    ProcessType(builder, underlyingType, options);
+                    builder.Append('?');
+                }
+                else
+                {
+                    var genericArguments = type.GetGenericArguments();
+                    ProcessGenericType(builder, type, genericArguments, genericArguments.Length, options);
+                }
             }
             else if (type.IsArray)
             {

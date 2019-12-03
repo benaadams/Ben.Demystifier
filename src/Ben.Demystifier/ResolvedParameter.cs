@@ -12,6 +12,7 @@ namespace System.Diagnostics
         public Type ResolvedType { get; set; }
 
         public string Prefix { get; set; }
+        public bool IsDynamicType { get; set; }
 
         public override string ToString() => Append(new StringBuilder()).ToString();
 
@@ -23,7 +24,11 @@ namespace System.Diagnostics
                   .Append(" ");
             }
 
-            if (ResolvedType != null)
+            if (IsDynamicType)
+            {
+                sb.Append("dynamic");
+            }
+            else if (ResolvedType != null)
             {
                 AppendTypeName(sb);
             }
