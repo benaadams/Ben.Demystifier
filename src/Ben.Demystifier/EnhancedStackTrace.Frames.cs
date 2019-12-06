@@ -116,10 +116,10 @@ namespace System.Diagnostics
             var subMethodName = method.Name;
             var methodName = method.Name;
 
-            if (type != null && type.IsDefined(typeof(CompilerGeneratedAttribute)) &&
-                (typeof(IAsyncStateMachine).IsAssignableFrom(type) || typeof(IEnumerator).IsAssignableFrom(type)))
+            var isAsyncStateMachine = typeof(IAsyncStateMachine).IsAssignableFrom(type);
+            if (isAsyncStateMachine || typeof(IEnumerator).IsAssignableFrom(type))
             {
-                methodDisplayInfo.IsAsync = typeof(IAsyncStateMachine).IsAssignableFrom(type);
+                methodDisplayInfo.IsAsync = isAsyncStateMachine;
 
                 // Convert StateMachine methods to correct overload +MoveNext()
                 if (!TryResolveStateMachineMethod(ref method, out type))
