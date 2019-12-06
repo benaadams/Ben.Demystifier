@@ -86,7 +86,6 @@ namespace Ben.Demystifier.Test
             Assert.Equal(expected, trace);
         }
 
-
         [Fact]
         public void DemistifiesMethodWithAsyncLambda()
         {
@@ -120,7 +119,7 @@ namespace Ben.Demystifier.Test
 
         private void MethodWithLambda()
         {
-            Action action = () => throw new ArgumentException();
+            Func<bool> action = () => throw new ArgumentException();
             action();
         }
 
