@@ -37,7 +37,7 @@ namespace System.Diagnostics
 
         public override string ToString() => Append(new StringBuilder()).ToString();
 
-        internal StringBuilder Append(StringBuilder builder)
+        public StringBuilder Append(StringBuilder builder)
         {
             if (IsAsync)
             {

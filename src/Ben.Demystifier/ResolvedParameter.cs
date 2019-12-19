@@ -16,7 +16,7 @@ namespace System.Diagnostics
 
         public override string ToString() => Append(new StringBuilder()).ToString();
 
-        internal StringBuilder Append(StringBuilder sb)
+        public StringBuilder Append(StringBuilder sb)
         {
             if (!string.IsNullOrEmpty(Prefix))
             {
