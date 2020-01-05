@@ -18,6 +18,9 @@ namespace System.Diagnostics
 
         internal StringBuilder Append(StringBuilder sb)
         {
+            if (ResolvedType.Assembly.ManifestModule.Name == "FSharp.Core.dll" && ResolvedType.Name == "Unit")
+                return sb;
+            
             if (!string.IsNullOrEmpty(Prefix))
             {
                 sb.Append(Prefix)

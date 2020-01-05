@@ -28,6 +28,15 @@ namespace System.Diagnostics
             { typeof(ulong), "ulong" },
             { typeof(ushort), "ushort" }
         };
+        
+        public static readonly Dictionary<string, string> FSharpTypeNames = new Dictionary<string, string>
+        {
+            { "Unit", "void" },
+            { "FSharpOption", "Option" },
+            { "FSharpAsync", "Async" },
+            { "FSharpOption`1", "Option" },
+            { "FSharpAsync`1", "Async" }
+        };
 
         /// <summary>
         /// Pretty print a type name.
@@ -93,6 +102,11 @@ namespace System.Diagnostics
             {
                 builder.Append(type.Name);
             }
+            else if (type.Assembly.ManifestModule.Name == "FSharp.Core.dll" 
+                     && FSharpTypeNames.TryGetValue(type.Name, out builtInName))
+            {
+                builder.Append(builtInName);
+            }
             else if (type.IsGenericParameter)
             {
                 if (options.IncludeGenericParameterNames)
@@ -154,7 +168,15 @@ namespace System.Diagnostics
                 return;
             }
 
-            builder.Append(type.Name, 0, genericPartIndex);
+            if (type.Assembly.ManifestModule.Name == "FSharp.Core.dll" 
+                     && FSharpTypeNames.TryGetValue(type.Name, out var builtInName))
+            {
+                builder.Append(builtInName);
+            }
+            else
+            {
+                builder.Append(type.Name, 0, genericPartIndex);
+            }
 
             builder.Append('<');
             for (var i = offset; i < length; i++)

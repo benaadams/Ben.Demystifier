@@ -114,6 +114,13 @@ namespace System.Diagnostics
 
                 methodName = method.Name;
             }
+            else if (IsFSharpAsync(method))
+            {
+                methodDisplayInfo.IsAsync = true;
+                methodDisplayInfo.SubMethodBase = null;
+                subMethodName = null;
+                methodName = null;
+            }
 
             // Method name
             methodDisplayInfo.MethodBase = method;
@@ -239,6 +246,20 @@ namespace System.Diagnostics
             }
 
             return methodDisplayInfo;
+        }
+
+        private static bool IsFSharpAsync(MethodBase method)
+        {
+            if (method is MethodInfo minfo)
+            {
+                var returnType = minfo.ReturnType;
+                if (returnType.Namespace == "Microsoft.FSharp.Control" && returnType.Name == "FSharpAsync`1")
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private static bool TryResolveGeneratedName(ref MethodBase method, out Type type, out string methodName, out string subMethodName, out GeneratedNameKind kind, out int? ordinal)
@@ -659,6 +680,29 @@ namespace System.Diagnostics
                     case "RunInternal":
                     case "Run":
                         return false;
+                }
+            }
+
+            if (type.Namespace == "Microsoft.FSharp.Control")
+            {
+                switch (type.Name)
+                {
+                    case "AsyncPrimitives":
+                    case "Trampoline":
+                        return false;
+                    case var typeName when type.IsGenericType:
+                    {
+                        if (typeName == "AsyncResult`1") return false;
+                        else break;
+                    }
+                }
+            }
+            
+            if (type.Namespace == "Ply")
+            {
+                if (type.DeclaringType.Name == "TplPrimitives")
+                {
+                    return false;
                 }
             }
 
