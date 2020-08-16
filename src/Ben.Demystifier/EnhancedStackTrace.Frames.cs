@@ -53,7 +53,7 @@ namespace System.Diagnostics
                     var method = frame.GetMethod();
 
                     // Always show last stackFrame
-                    if (!ShowInStackTrace(method) && i < stackFrames.Length - 1)
+                    if (method != null && !ShowInStackTrace(method) && i < stackFrames.Length - 1)
                     {
                         continue;
                     }
@@ -62,7 +62,7 @@ namespace System.Diagnostics
                     var row = frame.GetFileLineNumber();
                     var column = frame.GetFileColumnNumber();
                     var ilOffset = frame.GetILOffset();
-                    if (string.IsNullOrEmpty(fileName) && ilOffset >= 0)
+                    if (method != null && string.IsNullOrEmpty(fileName) && ilOffset >= 0)
                     {
                         // .NET Framework and older versions of mono don't support portable PDBs
                         // so we read it manually to get file name and line information
