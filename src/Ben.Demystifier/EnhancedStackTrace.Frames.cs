@@ -615,6 +615,18 @@ namespace System.Diagnostics
         {
             Debug.Assert(method != null);
 
+            // Since .NET 5:
+            // https://github.com/dotnet/runtime/blob/7c18d4d6488dab82124d475d1199def01d1d252c/src/libraries/System.Private.CoreLib/src/System/Diagnostics/StackTrace.cs#L348-L361
+            if ((method.MethodImplementationFlags & MethodImplAttributes.AggressiveInlining) != 0)
+            {
+                // Aggressive Inlines won't normally show in the StackTrace; however for Tier0 Jit and
+                // cross-assembly AoT/R2R these inlines will be blocked until Tier1 Jit re-Jits
+                // them when they will inline. We don't show them in the StackTrace to bring consistency
+                // between this first-pass asm and fully optimized asm.
+                return false;
+            }
+
+            // Since .NET Core 2:
             if (StackTraceHiddenAttributeType != null)
             {
                 // Don't show any methods marked with the StackTraceHiddenAttribute
@@ -630,6 +642,17 @@ namespace System.Diagnostics
             if (type == null)
             {
                 return true;
+            }
+
+            // Since .NET Core 2:
+            if (StackTraceHiddenAttributeType != null)
+            {
+                // Don't show any methods marked with the StackTraceHiddenAttribute
+                // https://github.com/dotnet/coreclr/pull/14652
+                if (IsStackTraceHidden(type))
+                {
+                    return false;
+                }
             }
 
             if (type == typeof(Task<>) && method.Name == "InnerInvoke")
@@ -662,44 +685,33 @@ namespace System.Diagnostics
                 }
             }
 
-            if (StackTraceHiddenAttributeType != null)
+            // Fallbacks for runtime pre-StackTraceHiddenAttribute
+            if (type == typeof(ExceptionDispatchInfo) && method.Name == "Throw")
             {
-                // Don't show any types marked with the StackTraceHiddenAttribute
-                // https://github.com/dotnet/coreclr/pull/14652
-                if (IsStackTraceHidden(type))
+                return false;
+            }
+
+            if (type == typeof(TaskAwaiter) ||
+                type == typeof(TaskAwaiter<>) ||
+                type == typeof(ValueTaskAwaiter) ||
+                type == typeof(ValueTaskAwaiter<>) ||
+                type == typeof(ConfiguredValueTaskAwaitable.ConfiguredValueTaskAwaiter) ||
+                type == typeof(ConfiguredValueTaskAwaitable<>.ConfiguredValueTaskAwaiter) ||
+                type == typeof(ConfiguredTaskAwaitable.ConfiguredTaskAwaiter) ||
+                type == typeof(ConfiguredTaskAwaitable<>.ConfiguredTaskAwaiter))
+            {
+                switch (method.Name)
                 {
-                    return false;
+                    case "HandleNonSuccessAndDebuggerNotification":
+                    case "ThrowForNonSuccess":
+                    case "ValidateEnd":
+                    case "GetResult":
+                        return false;
                 }
             }
-            else
+            else if (type.FullName == "System.ThrowHelper")
             {
-                // Fallbacks for runtime pre-StackTraceHiddenAttribute
-                if (type == typeof(ExceptionDispatchInfo) && method.Name == "Throw")
-                {
-                    return false;
-                }
-                else if (type == typeof(TaskAwaiter) ||
-                    type == typeof(TaskAwaiter<>) ||
-                    type == typeof(ValueTaskAwaiter) ||
-                    type == typeof(ValueTaskAwaiter<>) ||
-                    type == typeof(ConfiguredValueTaskAwaitable.ConfiguredValueTaskAwaiter) ||
-                    type == typeof(ConfiguredValueTaskAwaitable<>.ConfiguredValueTaskAwaiter) ||
-                    type == typeof(ConfiguredTaskAwaitable.ConfiguredTaskAwaiter) ||
-                    type == typeof(ConfiguredTaskAwaitable<>.ConfiguredTaskAwaiter))
-                {
-                    switch (method.Name)
-                    {
-                        case "HandleNonSuccessAndDebuggerNotification":
-                        case "ThrowForNonSuccess":
-                        case "ValidateEnd":
-                        case "GetResult":
-                            return false;
-                    }
-                }
-                else if (type.FullName == "System.ThrowHelper")
-                {
-                    return false;
-                }
+                return false;
             }
 
             return true;
