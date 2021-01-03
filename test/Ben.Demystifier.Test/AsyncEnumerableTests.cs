@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -33,16 +34,13 @@ namespace Ben.Demystifier.Test
             var stackTrace = demystifiedException.ToString();
             stackTrace = LineEndingsHelper.RemoveLineEndings(stackTrace);
             var trace = string.Join("", stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => Regex.Replace(s, " x [0-9]+", " x N"))
                 .Skip(1)
                 .ToArray());
             var expected = string.Join("", new[] {
                 "   at async IAsyncEnumerable<int> Ben.Demystifier.Test.AsyncEnumerableTests.Throw(CancellationToken cancellationToken)+MoveNext()",
-                "   at async IAsyncEnumerable<int> Ben.Demystifier.Test.AsyncEnumerableTests.Throw(CancellationToken cancellationToken)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult(short token)",
-                "   at async IAsyncEnumerable<long> Ben.Demystifier.Test.AsyncEnumerableTests.Start(CancellationToken cancellationToken)+MoveNext()",
-                "   at async IAsyncEnumerable<long> Ben.Demystifier.Test.AsyncEnumerableTests.Start(CancellationToken cancellationToken)+MoveNext()",
-                "   at async IAsyncEnumerable<long> Ben.Demystifier.Test.AsyncEnumerableTests.Start(CancellationToken cancellationToken)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult(short token)",
-                "   at async Task Ben.Demystifier.Test.AsyncEnumerableTests.DemystifiesAsyncEnumerable()",
-                "   at async Task Ben.Demystifier.Test.AsyncEnumerableTests.DemystifiesAsyncEnumerable()"
+                "   at async IAsyncEnumerable<long> Ben.Demystifier.Test.AsyncEnumerableTests.Start(CancellationToken cancellationToken)+MoveNext() x N",
+                "   at async Task Ben.Demystifier.Test.AsyncEnumerableTests.DemystifiesAsyncEnumerable() x N"
             });
             Assert.Equal(expected, trace);
         }

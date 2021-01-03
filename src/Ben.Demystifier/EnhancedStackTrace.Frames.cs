@@ -44,9 +44,10 @@ namespace System.Diagnostics
                 return frames;
             }
 
-            using (var portablePdbReader = new PortablePdbReader())
+            EnhancedStackFrame lastFrame = null;
+            PortablePdbReader portablePdbReader = null;
+            try
             {
-
                 for (var i = 0; i < stackFrames.Length; i++)
                 {
                     var frame = stackFrames[i];
@@ -66,17 +67,32 @@ namespace System.Diagnostics
                     {
                         // .NET Framework and older versions of mono don't support portable PDBs
                         // so we read it manually to get file name and line information
-                        portablePdbReader.PopulateStackFrame(frame, method, frame.GetILOffset(), out fileName, out row, out column);
+                        (portablePdbReader ??= new PortablePdbReader()).PopulateStackFrame(frame, method, frame.GetILOffset(), out fileName, out row, out column);
                     }
 
-                    var stackFrame = new EnhancedStackFrame(frame, GetMethodDisplayString(method), fileName, row, column);
-
-
-                    frames.Add(stackFrame);
+                    var resolvedMethod = GetMethodDisplayString(method);
+                    if (lastFrame?.IsEquivalent(resolvedMethod, fileName, row, column) ?? false)
+                    {
+                        lastFrame.IsRecursive = true;
+                    }
+                    else
+                    {
+                        var stackFrame = new EnhancedStackFrame(frame, resolvedMethod, fileName, row, column);
+                        frames.Add(stackFrame);
+                        lastFrame = stackFrame;
+                    }
+                }
+            }
+            finally
+            {
+                if (portablePdbReader is not null)
+                {
+                    portablePdbReader.Dispose();
                 }
 
-                return frames;
             }
+
+            return frames;
         }
 
         public static ResolvedMethod GetMethodDisplayString(MethodBase originMethod)
@@ -684,6 +700,10 @@ namespace System.Diagnostics
             {
                 return false;
             }
+            if (method.Name.StartsWith("System.Threading.Tasks.Sources.IValueTaskSource") && method.Name.EndsWith(".GetResult"))
+            {
+                return false;
+            }
             if (type == typeof(Task) || type.DeclaringType == typeof(Task))
             {
                 if (method.Name.Contains(".cctor"))
@@ -700,7 +720,6 @@ namespace System.Diagnostics
                     case "InnerInvoke":
                     case "ExecuteEntryUnsafe":
                     case "ExecuteFromThreadPool":
-                    case "s_ecCallback":
                         return false;
                 }
             }
@@ -829,7 +848,7 @@ namespace System.Diagnostics
                 return false;
             }
 
-            foreach (MethodInfo candidateMethod in methods)
+            foreach (var candidateMethod in methods)
             {
                 var attributes = candidateMethod.GetCustomAttributes<StateMachineAttribute>(inherit: false);
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse - Taken from CoreFX
@@ -839,7 +858,7 @@ namespace System.Diagnostics
                 }
 
                 bool foundAttribute = false, foundIteratorAttribute = false;
-                foreach (StateMachineAttribute asma in attributes)
+                foreach (var asma in attributes)
                 {
                     if (asma.StateMachineType == declaringType)
                     {
