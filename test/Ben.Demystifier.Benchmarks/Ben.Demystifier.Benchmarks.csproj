@@ -1,11 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net462</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;netcoreapp3.1;net462;net5.0</TargetFrameworks>
     <Configuration>Release</Configuration>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Ben.Demystifier\Ben.Demystifier.csproj" />
-    <PackageReference Include="BenchmarkDotNet" Version="0.10.12" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
   </ItemGroup>
 </Project>
