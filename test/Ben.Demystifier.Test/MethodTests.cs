@@ -125,7 +125,9 @@ namespace Ben.Demystifier.Test
 
         private void MethodWithAsyncLambda()
         {
+#pragma warning disable 1998
             Func<Task> action = async () => throw new ArgumentException();
+#pragma warning restore 1998
             action().ConfigureAwait(false).GetAwaiter().GetResult();
         }
     }

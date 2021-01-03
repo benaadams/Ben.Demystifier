@@ -44,8 +44,8 @@ namespace System.Diagnostics
                 return frames;
             }
 
-            EnhancedStackFrame lastFrame = null;
-            PortablePdbReader portablePdbReader = null;
+            EnhancedStackFrame? lastFrame = null;
+            PortablePdbReader? portablePdbReader = null;
             try
             {
                 for (var i = 0; i < stackFrames.Length; i++)
@@ -70,6 +70,12 @@ namespace System.Diagnostics
                         (portablePdbReader ??= new PortablePdbReader()).PopulateStackFrame(frame, method, frame.GetILOffset(), out fileName, out row, out column);
                     }
 
+                    if (method is null)
+                    {
+                        // Method can't be null
+                        continue;
+                    }
+
                     var resolvedMethod = GetMethodDisplayString(method);
                     if (lastFrame?.IsEquivalent(resolvedMethod, fileName, row, column) ?? false)
                     {
@@ -85,11 +91,7 @@ namespace System.Diagnostics
             }
             finally
             {
-                if (portablePdbReader is not null)
-                {
-                    portablePdbReader.Dispose();
-                }
-
+                portablePdbReader?.Dispose();
             }
 
             return frames;

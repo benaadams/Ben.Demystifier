@@ -32,7 +32,7 @@ namespace System.Diagnostics
             _colNumber = colNumber;
         }
 
-        internal bool IsEquivalent(ResolvedMethod methodInfo, string fileName, int lineNumber, int colNumber)
+        internal bool IsEquivalent(ResolvedMethod methodInfo, string? fileName, int lineNumber, int colNumber)
         {
             return _lineNumber == lineNumber &&
                 _colNumber == colNumber &&
