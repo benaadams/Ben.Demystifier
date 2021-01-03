@@ -32,7 +32,7 @@ namespace Ben.Demystifier.Test
                 var s = EnhancedStackTrace.GetMethodDisplayString(sf.GetMethod());
                 Assert.True(true, "Does not throw exception when diagnosing generic method display string.");
             }
-            catch (Exception ioe)
+            catch (Exception)
             {
                 Assert.True(false, "Must not throw an exception when diagnosing generic method display string.");
             }

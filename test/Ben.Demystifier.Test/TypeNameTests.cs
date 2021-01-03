@@ -19,7 +19,7 @@ namespace Ben.Demystifier.Test
             }
         }
 
-        public void Throw(Generic<(int a, string b)>.Nested nested) 
+        private void Throw(Generic<(int a, string b)>.Nested nested) 
         {
             throw null;
         }
