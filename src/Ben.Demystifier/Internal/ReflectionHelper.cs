@@ -12,7 +12,7 @@ namespace System.Diagnostics.Internal
     /// </summary>
     public static class ReflectionHelper
     {
-        private static PropertyInfo tranformerNamesLazyPropertyInfo;
+        private static PropertyInfo? tranformerNamesLazyPropertyInfo;
 
         /// <summary>
         /// Returns true if the <paramref name="type"/> is a value tuple type.
@@ -43,15 +43,15 @@ namespace System.Diagnostics.Internal
         /// To avoid compile-time depencency hell with System.ValueTuple, this method uses reflection 
         /// instead of casting the attribute to a specific type.
         /// </remarks>
-        public static IList<string> GetTransformerNames(this Attribute attribute)
+        public static IList<string>? GetTransformerNames(this Attribute attribute)
         {
             Debug.Assert(attribute.IsTupleElementNameAttribue());
 
             var propertyInfo = GetTransformNamesPropertyInfo(attribute.GetType());
-            return (IList<string>)propertyInfo.GetValue(attribute);
+            return propertyInfo?.GetValue(attribute) as IList<string>;
         }
 
-        private static PropertyInfo GetTransformNamesPropertyInfo(Type attributeType)
+        private static PropertyInfo? GetTransformNamesPropertyInfo(Type attributeType)
         {
             return LazyInitializer.EnsureInitialized(ref tranformerNamesLazyPropertyInfo,
                 () => attributeType.GetProperty("TransformNames", BindingFlags.Instance | BindingFlags.Public));

@@ -9,27 +9,27 @@ namespace System.Diagnostics
 {
     public class ResolvedMethod
     {
-        public MethodBase MethodBase { get; set; }
+        public MethodBase? MethodBase { get; set; }
 
-        public Type DeclaringType { get; set; }
+        public Type? DeclaringType { get; set; }
         
         public bool IsAsync { get; set; }
 
         public bool IsLambda { get; set; }
 
-        public ResolvedParameter ReturnParameter { get; set; }
+        public ResolvedParameter? ReturnParameter { get; set; }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public int? Ordinal { get; set; }
 
-        public string GenericArguments { get; set; }
+        public string? GenericArguments { get; set; }
 
-        public Type[] ResolvedGenericArguments { get; set; }
+        public Type[]? ResolvedGenericArguments { get; set; }
 
-        public MethodBase SubMethodBase { get; set; }
+        public MethodBase? SubMethodBase { get; set; }
 
-        public string SubMethod { get; set; }
+        public string? SubMethod { get; set; }
 
         public EnumerableIList<ResolvedParameter> Parameters { get; set; }
 

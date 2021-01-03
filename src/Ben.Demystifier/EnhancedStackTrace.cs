@@ -101,12 +101,13 @@ namespace System.Diagnostics
 
                 sb.Append("   at ");
                 frame.MethodInfo.Append(sb);
-
-                var filePath = frame.GetFileName();
-                if (!string.IsNullOrEmpty(filePath))
+                
+                if (frame.GetFileName() is {} fileName
+                    // IsNullOrEmpty alone wasn't enough to disable the null warning
+                    && !string.IsNullOrEmpty(fileName))
                 {
                     sb.Append(" in ");
-                    sb.Append(TryGetFullPath(filePath));
+                    sb.Append(TryGetFullPath(fileName));
 
                 }
 

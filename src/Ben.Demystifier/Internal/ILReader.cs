@@ -16,7 +16,7 @@ namespace System.Diagnostics.Internal
 
         public OpCode OpCode { get; private set; }
         public int MetadataToken { get; private set; }
-        public MemberInfo Operand { get; private set; }
+        public MemberInfo? Operand { get; private set; }
 
         public bool Read(MethodBase methodInfo)
         {
@@ -38,7 +38,7 @@ namespace System.Diagnostics.Internal
                 return doubleByteOpCode[ReadByte()];
         }
 
-        MemberInfo ReadOperand(OpCode code, MethodBase methodInfo)
+        MemberInfo? ReadOperand(OpCode code, MethodBase methodInfo)
         {
             MetadataToken = 0;
             int inlineLength;
@@ -46,12 +46,12 @@ namespace System.Diagnostics.Internal
             {
                 case OperandType.InlineMethod:
                     MetadataToken = ReadInt();
-                    Type[] methodArgs = null;
+                    Type[]? methodArgs = null;
                     if (methodInfo.GetType() != typeof(ConstructorInfo) && !methodInfo.GetType().IsSubclassOf(typeof(ConstructorInfo)))
                     {
                         methodArgs = methodInfo.GetGenericArguments();
                     }
-                    Type[] typeArgs = null;
+                    Type[]? typeArgs = null;
                     if (methodInfo.DeclaringType != null)
                     {
                         typeArgs = methodInfo.DeclaringType.GetGenericArguments();

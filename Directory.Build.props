@@ -5,4 +5,7 @@
   <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard2.0' and !$(TargetFramework.StartsWith('netcoreapp2')) and !$(TargetFramework.StartsWith('net4'))">
     <DefineConstants>$(DefineConstants);HAS_ASYNC_ENUMERATOR</DefineConstants>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Nullable" Version="1.3.0" PrivateAssets="All" />
+  </ItemGroup>
 </Project>
