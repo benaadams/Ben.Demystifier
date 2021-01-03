@@ -26,16 +26,12 @@ namespace Ben.Demystifier.Test
             // Assert
             var stackTrace = demystifiedException.ToString();
             stackTrace = LineEndingsHelper.RemoveLineEndings(stackTrace);
-            var trace = string.Join("", stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+            var traces = stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(s => Regex.Replace(s, " x [0-9]+", " x N")) 
                 .Skip(1)
-                .ToArray());
-            var expected = string.Join("", new[] {
-                "   at async Task<int> Ben.Demystifier.Test.RecursionTests.RecurseAsync(int depth)",
-                "   at async Task<int> Ben.Demystifier.Test.RecursionTests.RecurseAsync(int depth) x N",
-                "   at async Task Ben.Demystifier.Test.RecursionTests.DemystifiesAsyncRecursion()"
-            });
-            Assert.Equal(expected, trace);
+                .ToArray();
+
+            Assert.Contains("   at async Task<int> Ben.Demystifier.Test.RecursionTests.RecurseAsync(int depth) x N", traces);
         }
 
         [Fact]
@@ -55,16 +51,12 @@ namespace Ben.Demystifier.Test
             // Assert
             var stackTrace = demystifiedException.ToString();
             stackTrace = LineEndingsHelper.RemoveLineEndings(stackTrace);
-            var trace = string.Join("", stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+            var traces = stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(s => Regex.Replace(s, " x [0-9]+", " x N"))
                 .Skip(1)
-                .ToArray());
-            var expected = string.Join("", new[] {
-                "   at int Ben.Demystifier.Test.RecursionTests.Recurse(int depth)",
-                "   at int Ben.Demystifier.Test.RecursionTests.Recurse(int depth) x N",
-                "   at void Ben.Demystifier.Test.RecursionTests.DemystifiesRecursion()"
-            });
-            Assert.Equal(expected, trace);
+                .ToArray();
+
+            Assert.Contains("   at int Ben.Demystifier.Test.RecursionTests.Recurse(int depth) x N", traces);
         }
 
         async Task<int> RecurseAsync(int depth)
