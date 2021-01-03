@@ -2,4 +2,7 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard2.0' and !$(TargetFramework.StartsWith('netcoreapp2')) and !$(TargetFramework.StartsWith('net4'))">
+    <DefineConstants>$(DefineConstants);HAS_ASYNC_ENUMERATOR</DefineConstants>
+  </PropertyGroup>
 </Project>

@@ -845,7 +845,7 @@ namespace System.Diagnostics
                     {
                         foundAttribute = true;
                         foundIteratorAttribute |= asma is IteratorStateMachineAttribute
-#if NETSTANDARD2_1
+#if HAS_ASYNC_ENUMERATOR
                             || asma is AsyncIteratorStateMachineAttribute
 #endif
                             ;
