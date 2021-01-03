@@ -127,7 +127,7 @@ namespace Ben.Demystifier.Test
         {
             Func<Task> action = async () =>
             {
-                await Task.Delay(0);
+                await Task.CompletedTask;
                 throw new ArgumentException();
             };
 
