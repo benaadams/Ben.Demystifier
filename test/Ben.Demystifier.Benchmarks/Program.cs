@@ -43,6 +43,6 @@ namespace Ben.Demystifier.Benchmarks
 
     internal class Config : ManualConfig
     {
-        public Config() => Add(new MemoryDiagnoser());
+        public Config() => AddDiagnoser(MemoryDiagnoser.Default);
     }
 }
