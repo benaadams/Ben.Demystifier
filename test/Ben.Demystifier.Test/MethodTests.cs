@@ -87,12 +87,12 @@ namespace Ben.Demystifier.Test
         }
 
         [Fact]
-        public void DemistifiesMethodWithAsyncLambda()
+        public async Task DemistifiesMethodWithAsyncLambda()
         {
             Exception dex = null;
             try
             {
-                MethodWithAsyncLambda();
+                await MethodWithAsyncLambda();
             }
             catch (Exception e)
             {
@@ -106,9 +106,9 @@ namespace Ben.Demystifier.Test
 
             var expected = string.Join(string.Empty,
                 "System.ArgumentException: Value does not fall within the expected range.",
-                "   at async void Ben.Demystifier.Test.MethodTests.MethodWithAsyncLambda()+(?) => { }",
-                "   at void Ben.Demystifier.Test.MethodTests.MethodWithAsyncLambda()",
-                "   at void Ben.Demystifier.Test.MethodTests.DemistifiesMethodWithAsyncLambda()");
+                "   at async Task Ben.Demystifier.Test.MethodTests.MethodWithAsyncLambda()+(?) => { }",
+                "   at async Task Ben.Demystifier.Test.MethodTests.MethodWithAsyncLambda()",
+                "   at async Task Ben.Demystifier.Test.MethodTests.DemistifiesMethodWithAsyncLambda()");
 
             Assert.Equal(expected, trace);
         }
@@ -123,12 +123,15 @@ namespace Ben.Demystifier.Test
             action();
         }
 
-        private void MethodWithAsyncLambda()
+        private async Task MethodWithAsyncLambda()
         {
-#pragma warning disable 1998
-            Func<Task> action = async () => throw new ArgumentException();
-#pragma warning restore 1998
-            action().ConfigureAwait(false).GetAwaiter().GetResult();
+            Func<Task> action = async () =>
+            {
+                await Task.CompletedTask;
+                throw new ArgumentException();
+            };
+
+            await action();
         }
     }
 }
