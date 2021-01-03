@@ -1,7 +1,7 @@
 # Ben.Demystifier
 
 [![NuGet version (Ben.Demystifier)](https://img.shields.io/nuget/v/Ben.Demystifier.svg?style=flat-square)](https://www.nuget.org/packages/Ben.Demystifier/)
-[![Build status](https://ci.appveyor.com/api/projects/status/rlhygchfph287fq0?svg=true)](https://ci.appveyor.com/project/benaadams/ben-demystifier)
+[![build](https://github.com/benaadams/Ben.Demystifier/workflows/Demystifier%20PR%20Build/badge.svg)](https://github.com/benaadams/Ben.Demystifier/actions)
 
 ## High performance understanding for stack traces 
 
