@@ -41,7 +41,10 @@ jobs:
         run: dotnet --info
         
       - name: Clean
-      - run: dotnet clean -v m && dotnet build -c ${{ matrix.config }} && dotnet nuget locals all --clear
+      - run: dotnet clean -v m
+        
+      - name: Clear cache
+      - run: dotnet nuget locals all --clear
 
       - name: Build
       - run: dotnet build -c ${{ matrix.config }}
