@@ -44,6 +44,7 @@ namespace Ben.Demystifier.Test
                     s != "   at void System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, object state)" &&
                     s != "   at Task Ben.Demystifier.Test.DynamicCompilation.DoesNotPreventStackTrace()+() => { }"
                 )
+                .Select(s => Regex.Replace(s, "lambda_method[0-9]+\\(", "lambda_method("))
                 .ToArray();
 
             Assert.Equal(

@@ -663,8 +663,13 @@ namespace System.Diagnostics
             {
                 return false;
             }
-            if (type == typeof(Task))
+            if (type == typeof(Task) || type.DeclaringType == typeof(Task))
             {
+                if (method.Name.Contains(".cctor"))
+                {
+                    return false;
+                }
+
                 switch (method.Name)
                 {
                     case "ExecuteWithThreadLocal":
@@ -672,15 +677,24 @@ namespace System.Diagnostics
                     case "ExecutionContextCallback":
                     case "ExecuteEntry":
                     case "InnerInvoke":
+                    case "ExecuteEntryUnsafe":
+                    case "ExecuteFromThreadPool":
+                    case "s_ecCallback":
                         return false;
                 }
             }
             if (type == typeof(ExecutionContext))
             {
+                if (method.Name.Contains(".cctor"))
+                {
+                    return false;
+                }
+
                 switch (method.Name)
                 {
                     case "RunInternal":
                     case "Run":
+                    case "RunFromThreadPoolDispatchLoop":
                         return false;
                 }
             }

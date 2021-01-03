@@ -60,9 +60,8 @@ namespace System.Diagnostics
             }
 
             var genericPartIndex = type.Name.IndexOf('`');
-            Debug.Assert(genericPartIndex >= 0);
 
-            return type.Name.Substring(0, genericPartIndex);
+            return (genericPartIndex >= 0) ? type.Name.Substring(0, genericPartIndex) : type.Name;
         }
 
         private static void ProcessType(StringBuilder builder, Type type, DisplayNameOptions options)
