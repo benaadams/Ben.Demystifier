@@ -31,13 +31,24 @@ namespace Ben.Demystifier.Test
             stackTrace = LineEndingsHelper.RemoveLineEndings(stackTrace);
             var trace = stackTrace.Split(new[]{Environment.NewLine}, StringSplitOptions.None);
 
+#if NETCOREAPP3_1 || NET5_0
             Assert.Equal(
                 new[] {     
-                    "System.Exception: Exception of type 'System.Exception' was thrown. ---> System.Exception: Exception of type 'System.Exception' was thrown.",
+                    "System.Exception: Exception of type 'System.Exception' was thrown.",
+                    " ---> System.Exception: Exception of type 'System.Exception' was thrown.",
                     "   at Task Ben.Demystifier.Test.NonThrownException.DoesNotPreventThrowStackTrace()+() => { }",
                     "   at async Task Ben.Demystifier.Test.NonThrownException.DoesNotPreventThrowStackTrace()",
                     "   --- End of inner exception stack trace ---"}, 
                 trace);
+#else
+            Assert.Equal(
+                new[] {
+                    "System.Exception: Exception of type 'System.Exception' was thrown. ---> System.Exception: Exception of type 'System.Exception' was thrown.",
+                    "   at Task Ben.Demystifier.Test.NonThrownException.DoesNotPreventThrowStackTrace()+() => { }",
+                    "   at async Task Ben.Demystifier.Test.NonThrownException.DoesNotPreventThrowStackTrace()",
+                    "   --- End of inner exception stack trace ---"},
+                trace);
+#endif
 
             // Act
             try
@@ -54,6 +65,18 @@ namespace Ben.Demystifier.Test
             stackTrace = LineEndingsHelper.RemoveLineEndings(stackTrace);
             trace = stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
+#if NETCOREAPP3_1 || NET5_0
+            Assert.Equal(
+                new[] {
+                    "System.Exception: Exception of type 'System.Exception' was thrown.",
+                    " ---> System.Exception: Exception of type 'System.Exception' was thrown.",
+                    "   at Task Ben.Demystifier.Test.NonThrownException.DoesNotPreventThrowStackTrace()+() => { }",
+                    "   at async Task Ben.Demystifier.Test.NonThrownException.DoesNotPreventThrowStackTrace()",
+                    "   --- End of inner exception stack trace ---",
+                    "   at async Task Ben.Demystifier.Test.NonThrownException.DoesNotPreventThrowStackTrace()"
+                },
+                trace);
+#else
             Assert.Equal(
                 new[] {
                     "System.Exception: Exception of type 'System.Exception' was thrown. ---> System.Exception: Exception of type 'System.Exception' was thrown.",
@@ -63,6 +86,7 @@ namespace Ben.Demystifier.Test
                     "   at async Task Ben.Demystifier.Test.NonThrownException.DoesNotPreventThrowStackTrace()"
                 },
                 trace);
+#endif
         }
 
         [Fact]
