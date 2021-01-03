@@ -37,12 +37,8 @@ namespace Ben.Demystifier.Test
                 .ToArray());
             var expected = string.Join("", new[] {
                 "   at async IAsyncEnumerable<int> Ben.Demystifier.Test.AsyncEnumerableTests.Throw(CancellationToken cancellationToken)+MoveNext()",
-                "   at async IAsyncEnumerable<int> Ben.Demystifier.Test.AsyncEnumerableTests.Throw(CancellationToken cancellationToken)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult(short token)",
-                "   at async IAsyncEnumerable<long> Ben.Demystifier.Test.AsyncEnumerableTests.Start(CancellationToken cancellationToken)+MoveNext()",
-                "   at async IAsyncEnumerable<long> Ben.Demystifier.Test.AsyncEnumerableTests.Start(CancellationToken cancellationToken)+MoveNext()",
-                "   at async IAsyncEnumerable<long> Ben.Demystifier.Test.AsyncEnumerableTests.Start(CancellationToken cancellationToken)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult(short token)",
-                "   at async Task Ben.Demystifier.Test.AsyncEnumerableTests.DemystifiesAsyncEnumerable()",
-                "   at async Task Ben.Demystifier.Test.AsyncEnumerableTests.DemystifiesAsyncEnumerable()"
+                "   at async IAsyncEnumerable<long> Ben.Demystifier.Test.AsyncEnumerableTests.Start(CancellationToken cancellationToken)+MoveNext() x 2",
+                "   at async Task Ben.Demystifier.Test.AsyncEnumerableTests.DemystifiesAsyncEnumerable() x 2"
             });
             Assert.Equal(expected, trace);
         }
