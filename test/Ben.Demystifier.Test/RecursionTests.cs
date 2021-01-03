@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -26,11 +27,12 @@ namespace Ben.Demystifier.Test
             var stackTrace = demystifiedException.ToString();
             stackTrace = LineEndingsHelper.RemoveLineEndings(stackTrace);
             var trace = string.Join("", stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => Regex.Replace(s, " x [0-9]+", " x N")) 
                 .Skip(1)
                 .ToArray());
             var expected = string.Join("", new[] {
                 "   at async Task<int> Ben.Demystifier.Test.RecursionTests.RecurseAsync(int depth)",
-                "   at async Task<int> Ben.Demystifier.Test.RecursionTests.RecurseAsync(int depth) x 10",
+                "   at async Task<int> Ben.Demystifier.Test.RecursionTests.RecurseAsync(int depth) x N",
                 "   at async Task Ben.Demystifier.Test.RecursionTests.DemystifiesAsyncRecursion()"
             });
             Assert.Equal(expected, trace);
@@ -54,11 +56,12 @@ namespace Ben.Demystifier.Test
             var stackTrace = demystifiedException.ToString();
             stackTrace = LineEndingsHelper.RemoveLineEndings(stackTrace);
             var trace = string.Join("", stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => Regex.Replace(s, " x [0-9]+", " x N"))
                 .Skip(1)
                 .ToArray());
             var expected = string.Join("", new[] {
                 "   at int Ben.Demystifier.Test.RecursionTests.Recurse(int depth)",
-                "   at int Ben.Demystifier.Test.RecursionTests.Recurse(int depth) x 10",
+                "   at int Ben.Demystifier.Test.RecursionTests.Recurse(int depth) x N",
                 "   at void Ben.Demystifier.Test.RecursionTests.DemystifiesRecursion()"
             });
             Assert.Equal(expected, trace);
