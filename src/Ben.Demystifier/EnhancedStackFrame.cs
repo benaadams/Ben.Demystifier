@@ -13,6 +13,12 @@ namespace System.Diagnostics
 
         public StackFrame StackFrame { get; }
 
+        public bool IsRecursive 
+        { 
+            get => MethodInfo.RecurseCount > 0;
+            internal set => MethodInfo.RecurseCount++;
+        }
+
         public ResolvedMethod MethodInfo { get; }
 
         internal EnhancedStackFrame(StackFrame stackFrame, ResolvedMethod methodInfo, string? fileName, int lineNumber, int colNumber)
@@ -24,6 +30,14 @@ namespace System.Diagnostics
             _fileName = fileName;
             _lineNumber = lineNumber;
             _colNumber = colNumber;
+        }
+
+        internal bool IsEquivalent(ResolvedMethod methodInfo, string fileName, int lineNumber, int colNumber)
+        {
+            return _lineNumber == lineNumber &&
+                _colNumber == colNumber &&
+                _fileName == fileName &&
+                MethodInfo.IsSequentialEquivalent(methodInfo);
         }
 
         /// <summary>

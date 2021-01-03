@@ -34,6 +34,19 @@ namespace System.Diagnostics
         public EnumerableIList<ResolvedParameter> Parameters { get; set; }
 
         public EnumerableIList<ResolvedParameter> SubMethodParameters { get; set; }
+        public int RecurseCount { get; internal set; }
+
+        internal bool IsSequentialEquivalent(ResolvedMethod obj)
+        {
+            return 
+                IsAsync == obj.IsAsync && 
+                DeclaringType == obj.DeclaringType &&
+                Name == obj.Name &&
+                IsLambda == obj.IsLambda &&
+                Ordinal == obj.Ordinal &&
+                GenericArguments == obj.GenericArguments &&
+                SubMethod == obj.SubMethod;
+        }
 
         public override string ToString() => Append(new StringBuilder()).ToString();
 
@@ -138,6 +151,11 @@ namespace System.Diagnostics
                         builder.Append("]");
                     }
                 }
+            }
+
+            if (RecurseCount > 0)
+            {
+                builder.Append($" x {RecurseCount + 1:0}");
             }
 
             return builder;
