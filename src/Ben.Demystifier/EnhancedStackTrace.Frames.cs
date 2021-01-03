@@ -804,38 +804,64 @@ namespace System.Diagnostics
             return false;
         }
 
+        // https://github.com/dotnet/runtime/blob/c985bdcec2a9190e733bcada413a193d5ff60c0d/src/libraries/System.Private.CoreLib/src/System/Diagnostics/StackTrace.cs#L375-L430
         private static bool TryResolveStateMachineMethod(ref MethodBase method, out Type declaringType)
         {
-            Debug.Assert(method != null);
-            Debug.Assert(method.DeclaringType != null);
-
+            if (method.DeclaringType is null)
+            {
+                declaringType = null!;
+                return false;
+            }
             declaringType = method.DeclaringType;
 
             var parentType = declaringType.DeclaringType;
-            if (parentType == null)
+            if (parentType is null)
             {
                 return false;
             }
 
-            var methods = parentType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            static MethodInfo[] GetDeclaredMethods(Type type) =>
+                type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
-            foreach (var candidateMethod in methods)
+            var methods = GetDeclaredMethods(parentType);
+            if (methods == null)
             {
-                var attributes = candidateMethod.GetCustomAttributes<StateMachineAttribute>();
+                return false;
+            }
 
-                foreach (var asma in attributes)
+            foreach (MethodInfo candidateMethod in methods)
+            {
+                var attributes = candidateMethod.GetCustomAttributes<StateMachineAttribute>(inherit: false);
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse - Taken from CoreFX
+                if (attributes is null)
+                {
+                    continue;
+                }
+
+                bool foundAttribute = false, foundIteratorAttribute = false;
+                foreach (StateMachineAttribute asma in attributes)
                 {
                     if (asma.StateMachineType == declaringType)
                     {
-                        method = candidateMethod;
-                        declaringType = candidateMethod.DeclaringType;
-                        // Mark the iterator as changed; so it gets the + annotation of the original method
-                        // async statemachines resolve directly to their builder methods so aren't marked as changed
-                        return asma is IteratorStateMachineAttribute;
+                        foundAttribute = true;
+                        foundIteratorAttribute |= asma is IteratorStateMachineAttribute
+#if NETSTANDARD2_1
+                            || asma is AsyncIteratorStateMachineAttribute
+#endif
+                            ;
                     }
                 }
-            }
 
+                if (foundAttribute)
+                {
+                    // If this is an iterator (sync or async), mark the iterator as changed, so it gets the + annotation
+                    // of the original method. Non-iterator async state machines resolve directly to their builder methods
+                    // so aren't marked as changed.
+                    method = candidateMethod;
+                    declaringType = candidateMethod.DeclaringType!;
+                    return foundIteratorAttribute;
+                }
+            }
             return false;
         }
 
