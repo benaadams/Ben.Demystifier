@@ -7,7 +7,7 @@
     <Authors>Ben Adams</Authors>
     <RepositoryUrl>https://github.com/benaadams/Ben.Demystifier</RepositoryUrl>
     <PackageProjectUrl>https://github.com/benaadams/Ben.Demystifier</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/benaadams/Ben.Demystifier/blob/master/LICENSE</PackageLicenseUrl>
+    <License>Apache-2.0</License>
     <RepositoryType>git</RepositoryType>
     <IncludeSource>true</IncludeSource>
     <DebugType>embedded</DebugType>
