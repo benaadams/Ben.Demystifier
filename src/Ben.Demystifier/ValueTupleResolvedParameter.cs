@@ -9,24 +9,30 @@ namespace System.Diagnostics
 {
     public class ValueTupleResolvedParameter : ResolvedParameter
     {
-        public IList<string> TupleNames { get; set; }
+        public IList<string> TupleNames { get; }
+
+        public ValueTupleResolvedParameter(Type resolvedType, IList<string> tupleNames) 
+            : base(resolvedType) 
+            => TupleNames = tupleNames;
 
         protected override void AppendTypeName(StringBuilder sb)
         {
-            if (ResolvedType.IsValueTuple())
+            if (ResolvedType is not null)
             {
-                AppendValueTupleParameterName(sb, ResolvedType);
-            }
-            else
-            {
-                // Need to unwrap the first generic argument first.
-                sb.Append(TypeNameHelper.GetTypeNameForGenericType(ResolvedType));
-                sb.Append("<");
-                AppendValueTupleParameterName(sb, ResolvedType.GetGenericArguments()[0]);
-                sb.Append(">");
+                if (ResolvedType.IsValueTuple())
+                {
+                    AppendValueTupleParameterName(sb, ResolvedType);
+                }
+                else
+                {
+                    // Need to unwrap the first generic argument first.
+                    sb.Append(TypeNameHelper.GetTypeNameForGenericType(ResolvedType));
+                    sb.Append("<");
+                    AppendValueTupleParameterName(sb, ResolvedType.GetGenericArguments()[0]);
+                    sb.Append(">");
+                }
             }
         }
-
 
         private void AppendValueTupleParameterName(StringBuilder sb, Type parameterType)
         {

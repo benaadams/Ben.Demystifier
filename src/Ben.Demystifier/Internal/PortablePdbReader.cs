@@ -68,13 +68,13 @@ namespace System.Diagnostics.Internal
             }
         }
 
-        private MetadataReader GetMetadataReader(string assemblyPath)
+        private MetadataReader? GetMetadataReader(string assemblyPath)
         {
             if (!_cache.TryGetValue(assemblyPath, out var provider))
             {
                 var pdbPath = GetPdbPath(assemblyPath);
 
-                if (!string.IsNullOrEmpty(pdbPath) && File.Exists(pdbPath) && IsPortable(pdbPath))
+                if (!string.IsNullOrEmpty(pdbPath) && File.Exists(pdbPath) && IsPortable(pdbPath!))
                 {
                     var pdbStream = File.OpenRead(pdbPath);
                     provider = MetadataReaderProvider.FromPortablePdbStream(pdbStream);
@@ -86,7 +86,7 @@ namespace System.Diagnostics.Internal
             return provider?.GetMetadataReader();
         }
 
-        private static string GetPdbPath(string assemblyPath)
+        private static string? GetPdbPath(string assemblyPath)
         {
             if (string.IsNullOrEmpty(assemblyPath))
             {
@@ -97,16 +97,16 @@ namespace System.Diagnostics.Internal
             {
                 var peStream = File.OpenRead(assemblyPath);
 
-                using (var peReader = new PEReader(peStream))
+                using var peReader = new PEReader(peStream);
+                foreach (var entry in peReader.ReadDebugDirectory())
                 {
-                    foreach (var entry in peReader.ReadDebugDirectory())
+                    if (entry.Type == DebugDirectoryEntryType.CodeView)
                     {
-                        if (entry.Type == DebugDirectoryEntryType.CodeView)
-                        {
-                            var codeViewData = peReader.ReadCodeViewDebugDirectoryData(entry);
-                            var peDirectory = Path.GetDirectoryName(assemblyPath);
-                            return Path.Combine(peDirectory, Path.GetFileName(codeViewData.Path));
-                        }
+                        var codeViewData = peReader.ReadCodeViewDebugDirectoryData(entry);
+                        var peDirectory = Path.GetDirectoryName(assemblyPath);
+                        return peDirectory is null 
+                            ? null 
+                            : Path.Combine(peDirectory, Path.GetFileName(codeViewData.Path));
                     }
                 }
             }
@@ -116,13 +116,11 @@ namespace System.Diagnostics.Internal
 
         private static bool IsPortable(string pdbPath)
         {
-            using (var pdbStream = File.OpenRead(pdbPath))
-            {
-                return pdbStream.ReadByte() == 'B' &&
-                    pdbStream.ReadByte() == 'S' &&
-                    pdbStream.ReadByte() == 'J' &&
-                    pdbStream.ReadByte() == 'B';
-            }
+            using var pdbStream = File.OpenRead(pdbPath);
+            return pdbStream.ReadByte() == 'B' &&
+                   pdbStream.ReadByte() == 'S' &&
+                   pdbStream.ReadByte() == 'J' &&
+                   pdbStream.ReadByte() == 'B';
         }
 
         public void Dispose()

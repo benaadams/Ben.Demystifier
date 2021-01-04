@@ -24,7 +24,7 @@ namespace System.Collections.Generic.Enumerable
         }
 
         public void Dispose() { }
-        object IEnumerator.Current => Current;
+        object? IEnumerator.Current => Current;
         public void Reset() => _index = -1;
     }
 }

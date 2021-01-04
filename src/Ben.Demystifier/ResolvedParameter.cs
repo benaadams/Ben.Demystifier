@@ -7,12 +7,14 @@ namespace System.Diagnostics
 {
     public class ResolvedParameter
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public Type ResolvedType { get; set; }
 
-        public string Prefix { get; set; }
+        public string? Prefix { get; set; }
         public bool IsDynamicType { get; set; }
+
+        public ResolvedParameter(Type resolvedType) => ResolvedType = resolvedType;
 
         public override string ToString() => Append(new StringBuilder()).ToString();
 

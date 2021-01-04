@@ -12,6 +12,7 @@
     <IncludeSource>true</IncludeSource>
     <DebugType>embedded</DebugType>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>

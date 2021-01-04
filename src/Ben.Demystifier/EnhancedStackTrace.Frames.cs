@@ -44,8 +44,8 @@ namespace System.Diagnostics
                 return frames;
             }
 
-            EnhancedStackFrame lastFrame = null;
-            PortablePdbReader portablePdbReader = null;
+            EnhancedStackFrame? lastFrame = null;
+            PortablePdbReader? portablePdbReader = null;
             try
             {
                 for (var i = 0; i < stackFrames.Length; i++)
@@ -70,6 +70,12 @@ namespace System.Diagnostics
                         (portablePdbReader ??= new PortablePdbReader()).PopulateStackFrame(frame, method, frame.GetILOffset(), out fileName, out row, out column);
                     }
 
+                    if (method is null)
+                    {
+                        // Method can't be null
+                        continue;
+                    }
+
                     var resolvedMethod = GetMethodDisplayString(method);
                     if (lastFrame?.IsEquivalent(resolvedMethod, fileName, row, column) ?? false)
                     {
@@ -85,11 +91,7 @@ namespace System.Diagnostics
             }
             finally
             {
-                if (portablePdbReader is not null)
-                {
-                    portablePdbReader.Dispose();
-                }
-
+                portablePdbReader?.Dispose();
             }
 
             return frames;
@@ -97,12 +99,6 @@ namespace System.Diagnostics
 
         public static ResolvedMethod GetMethodDisplayString(MethodBase originMethod)
         {
-            // Special case: no method available
-            if (originMethod == null)
-            {
-                return null;
-            }
-
             var method = originMethod;
 
             var methodDisplayInfo = new ResolvedMethod
@@ -174,7 +170,7 @@ namespace System.Diagnostics
                                 if (value is Delegate d)
                                 {
                                     if (ReferenceEquals(d.Method, originMethod) &&
-                                        d.Target.ToString() == originMethod.DeclaringType.ToString())
+                                        d.Target.ToString() == originMethod.DeclaringType?.ToString())
                                     {
                                         methodDisplayInfo.Name = field.Name;
                                         methodDisplayInfo.IsLambda = false;
@@ -208,11 +204,10 @@ namespace System.Diagnostics
                 }
                 else if (mi.ReturnType != null)
                 {
-                    methodDisplayInfo.ReturnParameter = new ResolvedParameter
+                    methodDisplayInfo.ReturnParameter = new ResolvedParameter(mi.ReturnType)
                     {
                         Prefix = "",
                         Name = "",
-                        ResolvedType = mi.ReturnType,
                     };
                 }
             }
@@ -278,7 +273,7 @@ namespace System.Diagnostics
             return false;
         }
 
-        private static bool TryResolveGeneratedName(ref MethodBase method, out Type type, out string methodName, out string subMethodName, out GeneratedNameKind kind, out int? ordinal)
+        private static bool TryResolveGeneratedName(ref MethodBase method, out Type? type, out string methodName, out string? subMethodName, out GeneratedNameKind kind, out int? ordinal)
         {
             kind = GeneratedNameKind.None;
             type = method.DeclaringType;
@@ -364,15 +359,18 @@ namespace System.Diagnostics
             return false;
         }
 
-        private static bool TryResolveSourceMethod(IEnumerable<MethodBase> candidateMethods, GeneratedNameKind kind, string matchHint, ref MethodBase method, ref Type type, out int? ordinal)
+        private static bool TryResolveSourceMethod(IEnumerable<MethodBase> candidateMethods, GeneratedNameKind kind, string? matchHint, ref MethodBase method, ref Type type, out int? ordinal)
         {
             ordinal = null;
             foreach (var candidateMethod in candidateMethods)
             {
-                var methodBody = candidateMethod.GetMethodBody();
+                if (candidateMethod.GetMethodBody() is not { } methodBody)
+                {
+                    continue;
+                }
                 if (kind == GeneratedNameKind.LambdaMethod)
                 {
-                    foreach (var v in EnumerableIList.Create(methodBody?.LocalVariables))
+                    foreach (var v in EnumerableIList.Create(methodBody.LocalVariables))
                     {
                         if (v.LocalType == type)
                         {
@@ -387,14 +385,13 @@ namespace System.Diagnostics
 
                 try
                 {
-                    var rawIL = methodBody?.GetILAsByteArray();
-                    if (rawIL == null) continue;
-                    var reader = new ILReader(rawIL);
+                    var rawIl = methodBody.GetILAsByteArray();
+                    var reader = new ILReader(rawIl);
                     while (reader.Read(candidateMethod))
                     {
                         if (reader.Operand is MethodBase mb)
                         {
-                            if (method == mb || (matchHint != null && method.Name.Contains(matchHint)))
+                            if (method == mb || matchHint != null && method.Name.Contains(matchHint))
                             {
                                 if (kind == GeneratedNameKind.LambdaMethod)
                                 {
@@ -462,7 +459,7 @@ namespace System.Diagnostics
             }
         }
 
-        static string GetMatchHint(GeneratedNameKind kind, MethodBase method)
+        static string? GetMatchHint(GeneratedNameKind kind, MethodBase method)
         {
             var methodName = method.Name;
 
@@ -590,28 +587,25 @@ namespace System.Diagnostics
                 }
             }
 
-            if (parameterType.IsByRef)
+            if (parameterType.IsByRef && parameterType.GetElementType() is {} elementType)
             {
-                parameterType = parameterType.GetElementType();
+                parameterType = elementType;
             }
 
-            return new ResolvedParameter
+            return new ResolvedParameter(parameterType)
             {
                 Prefix = prefix,
                 Name = parameter.Name,
-                ResolvedType = parameterType,
                 IsDynamicType = parameter.IsDefined(typeof(DynamicAttribute), false)
             };
         }
 
         private static ResolvedParameter GetValueTupleParameter(IList<string> tupleNames, string prefix, string name, Type parameterType)
         {
-            return new ValueTupleResolvedParameter
+            return new ValueTupleResolvedParameter(parameterType, tupleNames)
             {
-                TupleNames = tupleNames,
                 Prefix = prefix,
                 Name = name,
-                ResolvedType = parameterType
             };
         }
 
@@ -650,8 +644,6 @@ namespace System.Diagnostics
 
         private static bool ShowInStackTrace(MethodBase method)
         {
-            Debug.Assert(method != null);
-
             // Since .NET 5:
             // https://github.com/dotnet/runtime/blob/7c18d4d6488dab82124d475d1199def01d1d252c/src/libraries/System.Private.CoreLib/src/System/Diagnostics/StackTrace.cs#L348-L361
             if ((method.MethodImplementationFlags & MethodImplAttributes.AggressiveInlining) != 0)
