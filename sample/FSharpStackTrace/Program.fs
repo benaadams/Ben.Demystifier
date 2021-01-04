@@ -2,8 +2,7 @@
 
 open System
 open System.Diagnostics
-open System.Threading.Tasks
-open FSharp.Control.Tasks.Builders
+open FSharp.Control.Tasks
 
 let call i = async {
     do! Async.Sleep 1
