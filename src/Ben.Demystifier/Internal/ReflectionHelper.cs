@@ -53,7 +53,9 @@ namespace System.Diagnostics.Internal
 
         private static PropertyInfo? GetTransformNamesPropertyInfo(Type attributeType)
         {
+#pragma warning disable 8634
             return LazyInitializer.EnsureInitialized(ref tranformerNamesLazyPropertyInfo,
+#pragma warning restore 8634
                 () => attributeType.GetProperty("TransformNames", BindingFlags.Instance | BindingFlags.Public));
         }
     }

@@ -109,7 +109,7 @@ namespace Ben.Demystifier.Test
         static Func<string, bool, (string val, bool)> s_func = (string s, bool b) => (RefMethod(s), b);
         static string s = "";
 
-        class GenericClass<T>
+        static class GenericClass<T>
         {
             [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
             public static string GenericMethod<V>(ref V value)

@@ -129,7 +129,7 @@ namespace System.Diagnostics.Internal
 
             for (var i = 0; i < fields.Length; i++)
             {
-                var code = (OpCode)fields[i].GetValue(null);
+                var code = (OpCode)fields[i].GetValue(null)!;
                 if (code.OpCodeType == OpCodeType.Nternal)
                     continue;
 

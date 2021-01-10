@@ -11,10 +11,10 @@ namespace System.Diagnostics
     /// <nodoc />
     public static class ExceptionExtentions
     {
-        private static readonly FieldInfo stackTraceString = typeof(Exception).GetField("_stackTraceString", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly FieldInfo? stackTraceString = typeof(Exception).GetField("_stackTraceString", BindingFlags.Instance | BindingFlags.NonPublic);
 
         private static void SetStackTracesString(this Exception exception, string value)
-            => stackTraceString.SetValue(exception, value);
+            => stackTraceString?.SetValue(exception, value);
 
         /// <summary>
         /// Demystifies the given <paramref name="exception"/> and tracks the original stack traces for the whole exception tree.

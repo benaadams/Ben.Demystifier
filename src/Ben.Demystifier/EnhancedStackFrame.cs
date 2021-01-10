@@ -74,7 +74,7 @@ namespace System.Diagnostics
         ///     Gets the method in which the frame is executing.
         /// </summary>
         /// <returns>The method in which the frame is executing.</returns>
-        public override MethodBase GetMethod() => StackFrame.GetMethod();
+        public override MethodBase? GetMethod() => StackFrame.GetMethod();
 
         /// <summary>
         ///     Gets the offset from the start of the native just-in-time (JIT)-compiled code

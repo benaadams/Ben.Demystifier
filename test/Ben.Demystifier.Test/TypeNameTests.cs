@@ -25,5 +25,5 @@ namespace Ben.Demystifier.Test
         }
     }
 
-    public class Generic<T> { public struct Nested { } }
+    public static class Generic<T> { public struct Nested { } }
 }
