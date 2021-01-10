@@ -8,8 +8,7 @@ using System.Text;
 
 namespace System.Diagnostics
 {
-    /// <nodoc />
-    public static class ExceptionExtentions
+    public static class ExceptionExtensions
     {
         private static readonly FieldInfo? stackTraceString = typeof(Exception).GetField("_stackTraceString", BindingFlags.Instance | BindingFlags.NonPublic);
 
