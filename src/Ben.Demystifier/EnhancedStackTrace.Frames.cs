@@ -19,7 +19,7 @@ namespace System.Diagnostics
 {
     public partial class EnhancedStackTrace
     {
-        private static readonly Type StackTraceHiddenAttributeType = Type.GetType("System.Diagnostics.StackTraceHiddenAttribute", false);
+        private static readonly Type? StackTraceHiddenAttributeType = Type.GetType("System.Diagnostics.StackTraceHiddenAttribute", false);
 
         private static List<EnhancedStackFrame> GetFrames(Exception exception)
         {
@@ -34,7 +34,7 @@ namespace System.Diagnostics
             return GetFrames(stackTrace);
         }
 
-        private static List<EnhancedStackFrame> GetFrames(StackTrace stackTrace)
+        public static List<EnhancedStackFrame> GetFrames(StackTrace stackTrace)
         {
             var frames = new List<EnhancedStackFrame>();
             var stackFrames = stackTrace.GetFrames();
@@ -51,6 +51,10 @@ namespace System.Diagnostics
                 for (var i = 0; i < stackFrames.Length; i++)
                 {
                     var frame = stackFrames[i];
+                    if (frame is null)
+                    {
+                        continue;
+                    }
                     var method = frame.GetMethod();
 
                     // Always show last stackFrame
@@ -167,7 +171,7 @@ namespace System.Diagnostics
                             foreach (var field in fields)
                             {
                                 var value = field.GetValue(field);
-                                if (value is Delegate d)
+                                if (value is Delegate d && d.Target is not null)
                                 {
                                     if (ReferenceEquals(d.Method, originMethod) &&
                                         d.Target.ToString() == originMethod.DeclaringType?.ToString())
@@ -359,7 +363,7 @@ namespace System.Diagnostics
             return false;
         }
 
-        private static bool TryResolveSourceMethod(IEnumerable<MethodBase> candidateMethods, GeneratedNameKind kind, string? matchHint, ref MethodBase method, ref Type type, out int? ordinal)
+        private static bool TryResolveSourceMethod(IEnumerable<MethodBase> candidateMethods, GeneratedNameKind kind, string? matchHint, ref MethodBase method, ref Type? type, out int? ordinal)
         {
             ordinal = null;
             foreach (var candidateMethod in candidateMethods)
@@ -386,6 +390,10 @@ namespace System.Diagnostics
                 try
                 {
                     var rawIl = methodBody.GetILAsByteArray();
+                    if (rawIl is null)
+                    {
+                        continue;
+                    }
                     var reader = new ILReader(rawIl);
                     while (reader.Read(candidateMethod))
                     {
@@ -434,23 +442,25 @@ namespace System.Diagnostics
 
                 ordinal = foundOrdinal;
 
-                var methods = method.DeclaringType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+                var methods = method.DeclaringType?.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
-                var startName = method.Name.Substring(0, lamdaStart);
                 var count = 0;
-                foreach (var m in methods)
+                if (methods != null)
                 {
-                    if (m.Name.Length > lamdaStart && m.Name.StartsWith(startName))
+                    var startName = method.Name.Substring(0, lamdaStart);
+                    foreach (var m in methods)
                     {
-                        count++;
-
-                        if (count > 1)
+                        if (m.Name.Length > lamdaStart && m.Name.StartsWith(startName))
                         {
-                            break;
+                            count++;
+
+                            if (count > 1)
+                            {
+                                break;
+                            }
                         }
                     }
                 }
-
 
                 if (count <= 1)
                 {
@@ -600,7 +610,7 @@ namespace System.Diagnostics
             };
         }
 
-        private static ResolvedParameter GetValueTupleParameter(IList<string> tupleNames, string prefix, string name, Type parameterType)
+        private static ResolvedParameter GetValueTupleParameter(IList<string> tupleNames, string prefix, string? name, Type parameterType)
         {
             return new ValueTupleResolvedParameter(parameterType, tupleNames)
             {
@@ -748,7 +758,7 @@ namespace System.Diagnostics
             
             if (type.Namespace == "Ply")
             {
-                if (type.DeclaringType.Name == "TplPrimitives")
+                if (type.DeclaringType?.Name == "TplPrimitives")
                 {
                     return false;
                 }
@@ -788,7 +798,7 @@ namespace System.Diagnostics
 
         private static bool IsStackTraceHidden(MemberInfo memberInfo)
         {
-            if (!memberInfo.Module.Assembly.ReflectionOnly)
+            if (StackTraceHiddenAttributeType is not null && !memberInfo.Module.Assembly.ReflectionOnly)
             {
                 return memberInfo.GetCustomAttributes(StackTraceHiddenAttributeType, false).Length != 0;
             }
@@ -806,7 +816,7 @@ namespace System.Diagnostics
             foreach (var attribute in attributes)
             {
                 // reflection-only attribute, match on name
-                if (attribute.AttributeType.FullName == StackTraceHiddenAttributeType.FullName)
+                if (attribute.AttributeType.FullName == StackTraceHiddenAttributeType?.FullName)
                 {
                     return true;
                 }

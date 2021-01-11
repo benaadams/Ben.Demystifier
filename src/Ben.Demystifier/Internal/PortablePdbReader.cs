@@ -70,7 +70,7 @@ namespace System.Diagnostics.Internal
 
         private MetadataReader? GetMetadataReader(string assemblyPath)
         {
-            if (!_cache.TryGetValue(assemblyPath, out var provider))
+            if (!_cache.TryGetValue(assemblyPath, out var provider) && provider is not null)
             {
                 var pdbPath = GetPdbPath(assemblyPath);
 

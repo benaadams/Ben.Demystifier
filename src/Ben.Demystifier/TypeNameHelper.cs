@@ -124,7 +124,10 @@ namespace System.Diagnostics
             var innerType = type;
             while (innerType.IsArray)
             {
-                innerType = innerType.GetElementType();
+                if (innerType.GetElementType() is { } inner)
+                {
+                    innerType = inner;
+                }
             }
 
             ProcessType(builder, innerType, options);
@@ -134,21 +137,25 @@ namespace System.Diagnostics
                 builder.Append('[');
                 builder.Append(',', type.GetArrayRank() - 1);
                 builder.Append(']');
-                type = type.GetElementType();
+                if (type.GetElementType() is not { } elementType)
+                {
+                    break;
+                }
+                type = elementType;
             }
         }
 
         private static void ProcessGenericType(StringBuilder builder, Type type, Type[] genericArguments, int length, DisplayNameOptions options)
         {
             var offset = 0;
-            if (type.IsNested)
+            if (type.IsNested && type.DeclaringType is not null)
             {
                 offset = type.DeclaringType.GetGenericArguments().Length;
             }
 
             if (options.FullName)
             {
-                if (type.IsNested)
+                if (type.IsNested && type.DeclaringType is not null)
                 {
                     ProcessGenericType(builder, type.DeclaringType, genericArguments, offset, options);
                     builder.Append('+');

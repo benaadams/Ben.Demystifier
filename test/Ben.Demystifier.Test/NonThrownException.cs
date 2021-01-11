@@ -31,7 +31,7 @@ namespace Ben.Demystifier.Test
             stackTrace = LineEndingsHelper.RemoveLineEndings(stackTrace);
             var trace = stackTrace.Split(new[]{Environment.NewLine}, StringSplitOptions.None);
 
-#if NETCOREAPP3_1 || NET5_0
+#if NET5_0 || NETCOREAPP3_1 || NETCOREAPP3_0
             Assert.Equal(
                 new[] {     
                     "System.Exception: Exception of type 'System.Exception' was thrown.",
@@ -65,7 +65,7 @@ namespace Ben.Demystifier.Test
             stackTrace = LineEndingsHelper.RemoveLineEndings(stackTrace);
             trace = stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
-#if NETCOREAPP3_1 || NET5_0
+#if NET5_0 || NETCOREAPP3_1 || NETCOREAPP3_0
             Assert.Equal(
                 new[] {
                     "System.Exception: Exception of type 'System.Exception' was thrown.",
