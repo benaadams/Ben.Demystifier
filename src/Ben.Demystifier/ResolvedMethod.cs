@@ -49,7 +49,7 @@ namespace System.Diagnostics
         }
 
         public override string ToString() => Append(new StringBuilder()).ToString();
-        
+
         public StringBuilder Append(StringBuilder builder, bool fullName = true)
         {
             if (IsAsync)
