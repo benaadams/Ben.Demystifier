@@ -51,6 +51,9 @@ namespace System.Diagnostics
         public override string ToString() => Append(new StringBuilder()).ToString();
 
         public StringBuilder Append(StringBuilder builder)
+            => Append(builder, true);
+
+        public StringBuilder Append(StringBuilder builder, bool fullName)
         {
             if (IsAsync)
             {
@@ -71,16 +74,16 @@ namespace System.Diagnostics
                     if (string.IsNullOrEmpty(SubMethod) && !IsLambda)
                         builder.Append("new ");
 
-                    AppendDeclaringTypeName(builder);
+                    AppendDeclaringTypeName(builder, fullName);
                 }
                 else if (Name == ".cctor")
                 {
                     builder.Append("static ");
-                    AppendDeclaringTypeName(builder);
+                    AppendDeclaringTypeName(builder, fullName);
                 }
                 else
                 {
-                    AppendDeclaringTypeName(builder)
+                    AppendDeclaringTypeName(builder, fullName)
                         .Append(".")
                         .Append(Name);
                 }
@@ -161,9 +164,9 @@ namespace System.Diagnostics
             return builder;
         }
 
-        private StringBuilder AppendDeclaringTypeName(StringBuilder builder)
+        private StringBuilder AppendDeclaringTypeName(StringBuilder builder, bool fullName = true)
         {
-            return DeclaringType != null ? builder.AppendTypeDisplayName(DeclaringType, fullName: true, includeGenericParameterNames: true) : builder;
+            return DeclaringType != null ? builder.AppendTypeDisplayName(DeclaringType, fullName: fullName, includeGenericParameterNames: true) : builder;
         }
     }
 }
