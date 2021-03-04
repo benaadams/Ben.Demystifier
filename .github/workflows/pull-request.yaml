@@ -1,54 +1,86 @@
-name: Demystifier PR Build
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  build:
-    name: "Build for PR"
-    runs-on: ${{ matrix.os }}
-    env:
-      DOTNET_NOLOGO: true
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest, ubuntu-18.04, macOS-latest]
-        config: [Debug, Release]
-    steps:
-      - name: Clone source
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Install .NET Core SDK 2.1
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '2.1.x'
-
-      - name: Install .NET Core SDK 3.1
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '3.1.x'
-
-      - name: Install .NET SDK 5.0
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '5.0.x'
-
-      - name: Get .NET information
-        run: dotnet --info
-        
-      - name: Clean
-        run: dotnet clean -v m
-        
-      - name: Clear cache
-        run: dotnet nuget locals all --clear
-
-      - name: Build
-        run: dotnet build -c ${{ matrix.config }}
-      
-      - name: "Test"
-        run: dotnet test -c ${{ matrix.config }}
-        
+"name": "Demystifier PR Build",
+"on": {
+  "push": {
+     "branches": [
+        "main"
+     ]
+  },
+  "pull_request": {
+     "branches": [
+        "main"
+     ]
+  }
+},
+"jobs": {
+  "build": {
+     "name": "Build for PR",
+     "runs-on": "${{ matrix.os }}",
+     "env": {
+        "DOTNET_NOLOGO": true
+     },
+     "strategy": {
+        "fail-fast": false,
+        "matrix": {
+           "os": [
+              "windows-latest",
+              "ubuntu-18.04",
+              "macOS-latest"
+           ],
+           "config": [
+              "Debug",
+              "Release"
+           ]
+        }
+     },
+     "steps": [
+        {
+           "name": "Clone source",
+           "uses": "actions/checkout@v2",
+           "with": {
+              "fetch-depth": 0
+           }
+        },
+        {
+           "name": "Install .NET Core SDK 2.1",
+           "uses": "actions/setup-dotnet@v1",
+           "with": {
+              "dotnet-version": "2.1.x"
+           }
+        },
+        {
+           "name": "Install .NET Core SDK 3.1",
+           "uses": "actions/setup-dotnet@v1",
+           "with": {
+              "dotnet-version": "3.1.x"
+           }
+        },
+        {
+           "name": "Install .NET SDK 5.0",
+           "uses": "actions/setup-dotnet@v1",
+           "with": {
+              "dotnet-version": "5.0.x"
+           }
+        },
+        {
+           "name": "Get .NET information",
+           "run": "dotnet --info"
+        },
+        {
+           "name": "Clean",
+           "run": "dotnet clean -v m"
+        },
+        {
+           "name": "Clear cache",
+           "run": "dotnet nuget locals all --clear"
+        },
+        {
+           "name": "Build",
+           "run": "dotnet build -c ${{ matrix.config }}"
+        },
+        {
+           "name": "Test",
+           "run": "dotnet test -c ${{ matrix.config }}"
+        }
+     ]
+  }
+}
