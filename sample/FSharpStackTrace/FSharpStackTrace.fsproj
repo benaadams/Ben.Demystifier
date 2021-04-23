@@ -17,4 +17,8 @@
       <PackageReference Include="Ply" Version="0.3.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Update="FSharp.Core" Version="5.0.1" />
+    </ItemGroup>
+
 </Project>
