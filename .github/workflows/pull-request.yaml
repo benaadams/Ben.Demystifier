@@ -24,12 +24,6 @@ jobs:
 
       - name: Get .NET information
         run: dotnet --info
-        
-      - name: Clean
-        run: dotnet clean -v m
-        
-      - name: Clear cache
-        run: dotnet nuget locals all --clear
 
       - name: Build
         run: dotnet build -c ${{ matrix.config }}
