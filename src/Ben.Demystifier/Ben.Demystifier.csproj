@@ -15,6 +15,7 @@
     <Nullable>enable</Nullable>
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -45,11 +46,11 @@
   <ItemGroup>
     <None Include="..\..\images\icon.png">
       <Pack>True</Pack>
-      <PackagePath>.\icon.png</PackagePath>
+      <PackagePath>\</PackagePath>
     </None>
       <None Include="..\..\readme.md">
           <Pack>True</Pack>
-          <PackagePath>.\readme.md</PackagePath>
+          <PackagePath>\</PackagePath>
       </None>
   </ItemGroup>
 </Project>
