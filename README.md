@@ -1,7 +1,8 @@
 # Ben.Demystifier
-
 [![NuGet version (Ben.Demystifier)](https://img.shields.io/nuget/v/Ben.Demystifier.svg?style=flat-square)](https://www.nuget.org/packages/Ben.Demystifier/)
 [![build](https://github.com/benaadams/Ben.Demystifier/workflows/Demystifier%20PR%20Build/badge.svg)](https://github.com/benaadams/Ben.Demystifier/actions)
+
+Output the modern C# 7.0+ features in stack traces that looks like the C# source code that generated them rather than IL formatted.
 
 ## High performance understanding for stack traces 
 
@@ -11,7 +12,7 @@ The current output was good for C# 1.0; but has become progressively worse since
 
 ### Make error logs more productive
 
-Output the modern C# 7.0 features in stack traces in an understandable fashion that looks like the source code that generated them.
+Output the modern C# 7.0+ features in stack traces in an understandable fashion that looks like the C# source code that generated them.
 
 [![Demystified stacktrace](https://aoa.blob.core.windows.net/aspnet/stacktrace-demystified.png)](https://aoa.blob.core.windows.net/aspnet/stacktrace-demystified.png)
 
