@@ -25,19 +25,19 @@ jobs:
       - name: Setup .NET SDK (v2.1)
         uses: actions/setup-dotnet@v1.7.2
         with:
-            dotnet-version: '2.1.818'
+          dotnet-version: '2.1.818'
       - name: Setup .NET SDK (v3.1)
         uses: actions/setup-dotnet@v1.7.2
         with:
-            dotnet-version: '3.1.401'
+          dotnet-version: '3.1.414'
       - name: Setup .NET SDK (v5.0)
         uses: actions/setup-dotnet@v1.7.2
         with:
-            dotnet-version: '5.0.400'
+          dotnet-version: '5.0.402'
       - name: Setup .NET SDK (v6.0)
         uses: actions/setup-dotnet@v1.7.2
         with:
-            dotnet-version: '6.0.100-preview.7.21379.14'
+          dotnet-version: '6.0.100-rc.2.21505.57'
 
       - name: Get .NET information
         run: dotnet --info
