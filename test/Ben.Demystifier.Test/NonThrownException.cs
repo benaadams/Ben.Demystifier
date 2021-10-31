@@ -31,7 +31,7 @@ namespace Ben.Demystifier.Test
             stackTrace = LineEndingsHelper.RemoveLineEndings(stackTrace);
             var trace = stackTrace.Split(new[]{Environment.NewLine}, StringSplitOptions.None);
 
-#if NET5_0 || NETCOREAPP3_1 || NETCOREAPP3_0
+#if NETCOREAPP3_0_OR_GREATER
             Assert.Equal(
                 new[] {     
                     "System.Exception: Exception of type 'System.Exception' was thrown.",
@@ -65,7 +65,7 @@ namespace Ben.Demystifier.Test
             stackTrace = LineEndingsHelper.RemoveLineEndings(stackTrace);
             trace = stackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
-#if NET5_0 || NETCOREAPP3_1 || NETCOREAPP3_0
+#if NETCOREAPP3_0_OR_GREATER
             Assert.Equal(
                 new[] {
                     "System.Exception: Exception of type 'System.Exception' was thrown.",
@@ -109,7 +109,12 @@ namespace Ben.Demystifier.Test
 
             Assert.Equal(
                 new[] {
-                    "   at bool System.Threading.ThreadPoolWorkQueue.Dispatch()"},
+                    "   at bool System.Threading.ThreadPoolWorkQueue.Dispatch()",
+#if NET6_0_OR_GREATER
+                    "   at void System.Threading.PortableThreadPool+WorkerThread.WorkerThreadStart()",
+                    "   at void System.Threading.Thread.StartCallback()",
+#endif
+                },
                 trace);
         }
     }

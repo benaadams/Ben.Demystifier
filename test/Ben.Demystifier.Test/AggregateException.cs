@@ -44,7 +44,7 @@ namespace Ben.Demystifier.Test
                 .ToArray())
                 // Remove Full framework back arrow
                 .Replace("<---", "");
-#if NET5_0 || NETCOREAPP3_1 || NETCOREAPP3_0
+#if NETCOREAPP3_0_OR_GREATER
             var expected = string.Join("", new[] {
                 " ---> System.ArgumentException: Value does not fall within the expected range.",
                 "   at async Task Ben.Demystifier.Test.AggregateException.Throw1()",
