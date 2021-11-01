@@ -22,6 +22,23 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup .NET SDK (v2.1)
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: '2.1.818'
+      - name: Setup .NET SDK (v3.1)
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: '3.1.414'
+      - name: Setup .NET SDK (v5.0)
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: '5.0.402'
+      - name: Setup .NET SDK (v6.0)
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: '6.0.100-rc.2.21505.57'
+
       - name: Get .NET information
         run: dotnet --info
 
