@@ -20,6 +20,24 @@ namespace System.Diagnostics
     public partial class EnhancedStackTrace
     {
         private static readonly Type? StackTraceHiddenAttributeType = Type.GetType("System.Diagnostics.StackTraceHiddenAttribute", false);
+        private static readonly Type? AsyncIteratorStateMachineAttributeType = Type.GetType("System.Runtime.CompilerServices.AsyncIteratorStateMachineAttribute", false);
+
+        static EnhancedStackTrace()
+        {
+            if (AsyncIteratorStateMachineAttributeType != null) return;
+
+            Assembly mba;
+            try
+            {
+                mba = Assembly.Load("Microsoft.Bcl.AsyncInterfaces");
+            }
+            catch
+            {
+                return;
+            }
+
+            AsyncIteratorStateMachineAttributeType = mba.GetType("System.Runtime.CompilerServices.AsyncIteratorStateMachineAttribute", false);
+        }
 
         private static List<EnhancedStackFrame> GetFrames(Exception exception)
         {
@@ -706,6 +724,10 @@ namespace System.Diagnostics
             {
                 return false;
             }
+            if (method.Name == "GetResult" && method.DeclaringType?.FullName == "System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1")
+            {
+                return false;
+            }
             if (type == typeof(Task) || type.DeclaringType == typeof(Task))
             {
                 if (method.Name.Contains(".cctor"))
@@ -755,7 +777,7 @@ namespace System.Diagnostics
                     }
                 }
             }
-            
+
             if (type.Namespace == "Ply")
             {
                 if (type.DeclaringType?.Name == "TplPrimitives")
@@ -866,10 +888,8 @@ namespace System.Diagnostics
                     {
                         foundAttribute = true;
                         foundIteratorAttribute |= asma is IteratorStateMachineAttribute
-#if HAS_ASYNC_ENUMERATOR
-                            || asma is AsyncIteratorStateMachineAttribute
-#endif
-                            ;
+                            || AsyncIteratorStateMachineAttributeType != null
+                            && AsyncIteratorStateMachineAttributeType.IsInstanceOfType(asma);
                     }
                 }
 

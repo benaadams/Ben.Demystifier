@@ -1,4 +1,3 @@
-#if HAS_ASYNC_ENUMERATOR
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -63,4 +62,3 @@ namespace Ben.Demystifier.Test
         }
     }
 }
-#endif
