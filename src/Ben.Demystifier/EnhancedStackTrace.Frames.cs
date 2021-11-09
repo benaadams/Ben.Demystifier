@@ -605,7 +605,7 @@ namespace System.Diagnostics
             {
                 var customAttribs = parameter.GetCustomAttributes(inherit: false);
 
-                var tupleNameAttribute = customAttribs.OfType<Attribute>().FirstOrDefault(a => a.IsTupleElementNameAttribue());
+                var tupleNameAttribute = customAttribs.OfType<Attribute>().FirstOrDefault(a => a.IsTupleElementNameAttribute());
 
                 var tupleNames = tupleNameAttribute?.GetTransformerNames();
 
