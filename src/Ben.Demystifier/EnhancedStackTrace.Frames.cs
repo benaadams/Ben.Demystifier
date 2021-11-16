@@ -39,6 +39,10 @@ namespace System.Diagnostics
             AsyncIteratorStateMachineAttributeType = mba.GetType("System.Runtime.CompilerServices.AsyncIteratorStateMachineAttribute", false);
         }
 
+        private static readonly FieldInfo? CapturedTraces = typeof(Exception).GetField("captured_traces", BindingFlags.Instance | BindingFlags.NonPublic);
+        private static readonly FieldInfo? Frames = typeof(StackTrace).GetField("frames", BindingFlags.Instance | BindingFlags.NonPublic);
+        
+        
         private static List<EnhancedStackFrame> GetFrames(Exception exception)
         {
             if (exception == null)
@@ -48,6 +52,32 @@ namespace System.Diagnostics
 
             var needFileInfo = true;
             var stackTrace = new StackTrace(exception, needFileInfo);
+
+            if (Frames != null && CapturedTraces?.GetValue(exception) is StackTrace[] captured)
+            {
+                if (captured.Length > 0)
+                {
+                    var allFrames = new List<StackFrame>();
+                    foreach (var cap in captured)
+                    {
+                        if (cap.FrameCount > 0)
+                        {
+                            for (var i = 0; i < cap.FrameCount; i++)
+                            {
+                                var frame = cap.GetFrame(i);
+                                allFrames.Add(frame);
+                            }
+                        }
+                    }
+
+                    var frames = Frames.GetValue(stackTrace);
+                    if (frames is StackFrame[] existing)
+                    {
+                        allFrames.AddRange(existing);
+                        Frames.SetValue(stackTrace, allFrames.ToArray());
+                    }
+                }
+            }
 
             return GetFrames(stackTrace);
         }
