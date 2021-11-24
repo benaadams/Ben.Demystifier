@@ -637,39 +637,6 @@ namespace System.Diagnostics
             };
         }
 
-        private static string GetValueTupleParameterName(IList<string> tupleNames, Type parameterType)
-        {
-            var sb = new StringBuilder();
-            sb.Append("(");
-            var args = parameterType.GetGenericArguments();
-            for (var i = 0; i < args.Length; i++)
-            {
-                if (i > 0)
-                {
-                    sb.Append(", ");
-                }
-
-                sb.Append(TypeNameHelper.GetTypeDisplayName(args[i], fullName: false, includeGenericParameterNames: true));
-
-                if (i >= tupleNames.Count)
-                {
-                    continue;
-                }
-
-                var argName = tupleNames[i];
-                if (argName == null)
-                {
-                    continue;
-                }
-
-                sb.Append(" ");
-                sb.Append(argName);
-            }
-
-            sb.Append(")");
-            return sb.ToString();
-        }
-
         private static bool ShowInStackTrace(MethodBase method)
         {
             // Since .NET 5:
