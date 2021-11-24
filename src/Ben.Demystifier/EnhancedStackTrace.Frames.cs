@@ -159,7 +159,7 @@ namespace System.Diagnostics
             // Method name
             methodDisplayInfo.MethodBase = method;
             methodDisplayInfo.Name = methodName;
-            if (method.Name.IndexOf("<") >= 0)
+            if (method.Name.Contains('<'))
             {
                 if (TryResolveGeneratedName(ref method, out type, out methodName, out subMethodName, out var kind, out var ordinal))
                 {
@@ -446,7 +446,7 @@ namespace System.Diagnostics
             var lamdaStart = method.Name.IndexOf((char)GeneratedNameKind.LambdaMethod + "__") + 3;
             if (lamdaStart > 3)
             {
-                var secondStart = method.Name.IndexOf("_", lamdaStart) + 1;
+                var secondStart = method.Name.IndexOf('_', lamdaStart) + 1;
                 if (secondStart > 0)
                 {
                     lamdaStart = secondStart;
@@ -640,7 +640,7 @@ namespace System.Diagnostics
         private static string GetValueTupleParameterName(IList<string> tupleNames, Type parameterType)
         {
             var sb = new StringBuilder();
-            sb.Append("(");
+            sb.Append('(');
             var args = parameterType.GetGenericArguments();
             for (var i = 0; i < args.Length; i++)
             {
@@ -662,11 +662,11 @@ namespace System.Diagnostics
                     continue;
                 }
 
-                sb.Append(" ");
+                sb.Append(' ');
                 sb.Append(argName);
             }
 
-            sb.Append(")");
+            sb.Append(')');
             return sb.ToString();
         }
 
