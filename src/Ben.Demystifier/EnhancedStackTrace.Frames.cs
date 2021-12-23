@@ -188,16 +188,19 @@ namespace System.Diagnostics
                             var fields = type.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
                             foreach (var field in fields)
                             {
-                                var value = field.GetValue(field);
-                                if (value is Delegate d && d.Target is not null)
+                                if (typeof(Delegate).IsAssignableFrom(field.FieldType))
                                 {
-                                    if (ReferenceEquals(d.Method, originMethod) &&
-                                        d.Target.ToString() == originMethod.DeclaringType?.ToString())
+                                    var value = field.GetValue(field);
+                                    if (value is Delegate d && d.Target is not null)
                                     {
-                                        methodDisplayInfo.Name = field.Name;
-                                        methodDisplayInfo.IsLambda = false;
-                                        method = originMethod;
-                                        break;
+                                        if (ReferenceEquals(d.Method, originMethod) &&
+                                            d.Target.ToString() == originMethod.DeclaringType?.ToString())
+                                        {
+                                            methodDisplayInfo.Name = field.Name;
+                                            methodDisplayInfo.IsLambda = false;
+                                            method = originMethod;
+                                            break;
+                                        }
                                     }
                                 }
                             }
