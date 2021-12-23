@@ -190,11 +190,11 @@ namespace System.Diagnostics
                             {
                                 if (typeof(Delegate).IsAssignableFrom(field.FieldType))
                                 {
-                                    var value = field.GetValue(field);
-                                    if (value is Delegate d && d.Target is not null)
+                                    var value = (Delegate?)field.GetValue(field);
+                                    if (value is {Target: { }})
                                     {
-                                        if (ReferenceEquals(d.Method, originMethod) &&
-                                            d.Target.ToString() == originMethod.DeclaringType?.ToString())
+                                        if (ReferenceEquals(value.Method, originMethod) &&
+                                            value.Target.ToString() == originMethod.DeclaringType?.ToString())
                                         {
                                             methodDisplayInfo.Name = field.Name;
                                             methodDisplayInfo.IsLambda = false;
