@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-18.04, macOS-latest]
+        os: [windows-latest, ubuntu-latest, macOS-latest]
         config: [Debug, Release]
     steps:
       - name: Clone source
