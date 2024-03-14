@@ -12,7 +12,9 @@ namespace System.Diagnostics.Internal
     /// </summary>
     public static class ReflectionHelper
     {
+#if NET45
         private static PropertyInfo? transformerNamesLazyPropertyInfo;
+#endif
 
         /// <summary>
         /// Returns true if the <paramref name="type"/> is a value tuple type.
@@ -22,6 +24,7 @@ namespace System.Diagnostics.Internal
             return type.Namespace == "System" && type.Name.Contains("ValueTuple`");
         }
 
+#if NET45
         /// <summary>
         /// Returns true if the given <paramref name="attribute"/> is of type <code>TupleElementNameAttribute</code>.
         /// </summary>
@@ -43,12 +46,12 @@ namespace System.Diagnostics.Internal
         /// To avoid compile-time dependency hell with System.ValueTuple, this method uses reflection 
         /// instead of casting the attribute to a specific type.
         /// </remarks>
-        public static IList<string>? GetTransformerNames(this Attribute attribute)
+        public static IList<string?>? GetTransformerNames(this Attribute attribute)
         {
             Debug.Assert(attribute.IsTupleElementNameAttribute());
 
             var propertyInfo = GetTransformNamesPropertyInfo(attribute.GetType());
-            return propertyInfo?.GetValue(attribute) as IList<string>;
+            return propertyInfo?.GetValue(attribute) as IList<string?>;
         }
 
         private static PropertyInfo? GetTransformNamesPropertyInfo(Type attributeType)
@@ -58,5 +61,6 @@ namespace System.Diagnostics.Internal
 #pragma warning restore 8634
                 () => attributeType.GetProperty("TransformNames", BindingFlags.Instance | BindingFlags.Public)!);
         }
+#endif
     }
 }

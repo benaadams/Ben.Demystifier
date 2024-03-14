@@ -9,9 +9,9 @@ namespace System.Diagnostics
 {
     public class ValueTupleResolvedParameter : ResolvedParameter
     {
-        public IList<string> TupleNames { get; }
+        public IList<string?> TupleNames { get; }
 
-        public ValueTupleResolvedParameter(Type resolvedType, IList<string> tupleNames) 
+        public ValueTupleResolvedParameter(Type resolvedType, IList<string?> tupleNames) 
             : base(resolvedType) 
             => TupleNames = tupleNames;
 
